@@ -1,6 +1,14 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+20.02..04
+
+- Size `Classes` and `Orientation`
+- Undestand `Constraints`
+- Learn about `Alignment` and `Pinning`
+- Use `Containers` for more fine grained control
+- Learn about `StackViews` 
+
 20.02.03
 
 - 오늘은 각각의 이미지와 아이콘을 사이즈별로 구하는 방법을 배웠다.
