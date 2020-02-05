@@ -1,7 +1,334 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
-20.02..04
+20.02.05
+
+- Linking multiple elements to one IBAction
+
+
+- Function insdie of Function
+
+        func greeting1(){
+            print("Hello")
+            
+            func greeting2(){
+                print("Hey")
+            }
+
+        }
+        
+- Linking multiple elements to a single action
+    -@IB, interface connection part
+    -기본적으로 swift element들에 여러가지 property에 접근할 수 있다.
+        -example)
+            
+        sender.titleLabel.text
+    
+        @IBAction func keyPressed(_ sender: UIButton) {
+            
+            print(sender.titleLabel?.text);
+            
+            playSound()
+            
+        }
+        
+- Type Differences
+    - input
+    - swift specific grammer: `func myFunction(parameter: DataType){ }`
+
+
+- Play Sound
+
+        import UIKit
+        import AVFoundation
+
+        class ViewController: UIViewController {
+
+            var player: AVAudioPlayer!
+            
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+            }
+
+            @IBAction func keyPressed(_ sender: UIButton) {
+                
+                playSound(note: sender.currentTitle!)
+                print("\(sender.currentTitle!) is played")
+                sender.imageView?.backgroundColor?.withAlphaComponent(0.5)
+                
+            }
+            
+            func playSound(note: String){
+                let url = Bundle.main.url(forResource: note, withExtension: "wav")
+                player = try! AVAudioPlayer(contentsOf: url!)
+                player.play()
+            }
+            
+            
+        }
+
+- Creating Function
+        
+            var myAge:Int = 12
+        
+            func getMilk(bottles int){
+                var cost = bottles * 1.5
+            }
+        
+- Call Function
+
+            getMilk(bottles: 2);
+
+- String interpretatoin
+
+            func greeting(whoToGreet: String){
+                print("Hello \(whoToGreet)");
+            }
+            
+            gretting(whoToGreet: "Anyone");
+            
+- current title
+            
+            note: sender.currentTitle!
+            
+- alpha color
+
+            sender.imageView?.backgroundColor?.withAlphaComponent(0.5)
+            
+- Swift switch Statement
+"Swift는 `switch`를 사용할 때, `break` keyword가 필요가 없다."
+
+                let score = Int.random(in: 0...100)
+
+                switch score {
+                    case 81...100:
+
+                    case 41..<81:
+
+                    case ...40:
+
+                    default
+
+
+                }
+
+- Dictionary
+
+                let eggtimes = ["Soft" : 5, "Medium" : 7, "Hard" : 12]
+
+
+=> Dictionary 사용 전
+
+                import UIKit
+
+                class ViewController: UIViewController {
+                    
+                    let eggTimes = ["Soft": 5, "Medium": 7, "Hard": 9]
+
+                    @IBAction func eggClicked(_ sender: UIButton) {
+                        
+                        let hardness = sender.currentTitle
+                        
+                            
+                        switch hardness {
+                        case "Soft":
+                            print(eggTimes["Soft"]!);
+                        case "Medium":
+                            print(eggTimes["Medium"]!);
+                        case "Hard":
+                            print(eggTimes["Hard"]!);
+                        default: break
+                        
+                        }
+                        
+                        
+                    }
+                    
+                }
+
+=> Dictionary 적용 후
+
+                import UIKit
+
+                class ViewController: UIViewController {
+                    
+                    let eggTimes = ["Soft": 300, "Medium": 420, "Hard": 720]
+
+                    var secondsRemaining = 60;
+
+                   
+                    @IBAction func eggClicked(_ sender: UIButton) {
+                        let hardness = sender.currentTitle!
+                        secondsRemaining = eggTimes[hardness]!
+                        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true);
+                    }
+                    
+                    @objc func updateTimer(){
+                        if secondsRemaining > 0 {
+                            print("\(secondsRemaining) seconds.")
+                            secondsRemaining -= 1
+                        }
+                        
+                    }
+                }
+                
+- Optionals
+    - `?`는 nil 값을 허용
+    
+              var player1UserName : String? = nil
+    
+    -`!`는 optional을 unwrap 해준다.
+    
+            var unwrappedP1Username = player1Username!  
+        
+    - safety check
+    
+            if player1Username != nil {
+                print(player1Username!);
+            }
+            
+    
+
+- Timer Version 1
+
+import UIKit
+
+    class ViewController: UIViewController {
+        
+        let eggTimes = ["Soft": 300, "Medium": 420, "Hard": 720]
+
+        var secondsRemaining = 60;
+
+       
+        @IBAction func eggClicked(_ sender: UIButton) {
+            let hardness = sender.currentTitle!
+            secondsRemaining = eggTimes[hardness]!
+            Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true);
+        }
+        
+        @objc func updateTimer(){
+            if secondsRemaining > 0 {
+                print("\(secondsRemaining) seconds.")
+                secondsRemaining -= 1
+            }
+            
+        }
+    }
+
+- Timer Version 2
+
+        import UIKit
+
+        class ViewController: UIViewController {
+            
+            let eggTimes = ["Soft": 300, "Medium": 420, "Hard": 720]
+
+            @IBOutlet weak var textLabel: UILabel!
+            var secondsRemaining = 60;
+            var timer = Timer();
+            
+            @IBAction func eggClicked(_ sender: UIButton) {
+                    textLabel.text = "How do you like your eggs?"
+                timer.invalidate()
+                let hardness = sender.currentTitle!
+                secondsRemaining = eggTimes[hardness]!
+                timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+            }
+            
+            @objc func updateTimer(){
+                if secondsRemaining > 0 {
+                    print("\(secondsRemaining) seconds.")
+                    secondsRemaining -= 1
+                } else {
+                    timer.invalidate();
+                    textLabel.text = "done";
+                }
+            }
+        }
+        
+- Timer Version 3
+
+        import UIKit
+
+        class ViewController: UIViewController {
+            
+            @IBOutlet weak var textLabel: UILabel!
+            @IBOutlet weak var progressView: UIProgressView!
+            
+            var timer = Timer();
+            let eggTimes = ["Soft": 300, "Medium": 420, "Hard": 720];
+            var totalTime = 0;
+            var secondPassed = 0;
+            
+            @IBAction func eggClicked(_ sender: UIButton) {
+                textLabel.text = "How do you like your eggs?";
+                timer.invalidate();
+                let hardness = sender.currentTitle!
+                totalTime = eggTimes[hardness]!
+                timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true);
+            }
+            
+            @objc func updateTimer(){
+                if secondPassed < totalTime {
+                    let percentageProgress = Float(secondPassed) / Float(totalTime);
+                    progressView.setProgress(percentageProgress, animated: true);
+                    secondPassed += 1;
+                } else {
+                    timer.invalidate();
+                    textLabel.text = "done";
+                }
+            }
+        }
+
+- Timer Version4
+
+        import UIKit
+        import AVFoundation
+
+        class ViewController: UIViewController {
+            
+            @IBOutlet weak var textLabel: UILabel!
+            @IBOutlet weak var progressView: UIProgressView!
+            
+            let eggTimes = ["Soft": 300, "Medium": 420, "Hard": 720];
+            var player : AVAudioPlayer!
+            var timer = Timer();
+            var totalTime = 0;
+            var secondPassed = 0;
+            
+            @IBAction func eggClicked(_ sender: UIButton) {
+                progressView.setProgress(0, animated: true);
+                textLabel.text = "How do you like your eggs?";
+                timer.invalidate();
+                secondPassed = 0;
+                totalTime = 0;
+                let hardness = sender.currentTitle!
+                totalTime = eggTimes[hardness]!
+                timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true);
+            }
+            
+            @objc func updateTimer(){
+                if secondPassed < totalTime {
+                    let percentageProgress = Float(secondPassed) / Float(totalTime);
+                    progressView.setProgress(percentageProgress, animated: true);
+                    secondPassed += 1;
+                } else {
+                    timer.invalidate();
+                    textLabel.text = "done";
+                    playSound();
+                }
+            }
+            
+            func playSound(){
+                let url = Bundle.main.url(forResource: "alarm_sound", withExtension: "mp3");
+                player = try! AVAudioPlayer(contentsOf: url!);
+                player.play();
+            }
+            
+        }
+
+20.02.04
 
 - Size `Classes` and `Orientation`
 - Undestand `Constraints`
