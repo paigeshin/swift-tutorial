@@ -1,6 +1,165 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+20.02.07
+
+- print two decimal point
+
+        String(format: "%2.f", value)
+
+- no decimal point
+
+        String(format: "%.0f", value)
+
+- no decimal point
+
+        Int(value)
+        
+- square number
+
+        let bmi:Float = weight / pow(height, 2)
+
+- override method
+    - 굳이 super.method()를 호출하지 않아도 된다.
+    - super class에서 정의된 method가 필요 없다는 뜻이다.
+
+            override func move() {
+                    print("Fly forwards")
+                }
+                
+            override func attack() {
+                super.attack()
+                print("Spits Fire, does 10 damage")
+            }
+
+- struct vs class
+        - struct can't inherit
+        - class is passed by reference
+        - class can copy 
+        
+    - `use structures by default`
+    - use classes when you need Objective-C interporlability
+    - use `classes` when you need to control `the identity of the data` you're modeling
+    - use structures along with protocols to adopt behavior by sharing implementations
+        
+- multiple screen default
+
+        let secondVC = SecondViewController()
+        secondVC.bmiValue = String(format: "%.1f", bmi)
+        self.present(secondVC, animated: true, completion: nil)
+
+- multiple screen segue way
+        
+    - 첫 번째 화면
+    - segue에 id값을 준 뒤에
+    -  `self.performSegue(withIdentifier: "goToResult", sender: self)
+    - 보내줄 값이 있으면 `override prepare` 
+    
+            import UIKit
+
+            class CalculateViewController: UIViewController {
+
+                @IBOutlet weak var heightLabel: UILabel!
+                @IBOutlet weak var weightLabel: UILabel!
+                @IBOutlet weak var heightSlider: UISlider!
+                @IBOutlet weak var weightSlider: UISlider!
+
+                var bmiValue:Float = 0
+                
+                override func viewDidLoad() {
+                    super.viewDidLoad()
+                    // Do any additional setup after loading the view.
+                }
+
+                @IBAction func heightSliderChanged(_ sender: UISlider){
+                    heightLabel.text = String(format: "%.1f", sender.value) + "m"
+                }
+                
+                @IBAction func weightSliderChanged(_ sender: UISlider) {
+                    weightLabel.text = String(format: "%.0f", sender.value) + "Kg"
+                }
+                
+                @IBAction func calculatePressed(_ sender: UIButton) {
+                    let height:Float = heightSlider.value
+                    let weight:Float = weightSlider.value
+                    
+                    let bmi:Float = weight / pow(height, 2)
+                    bmiValue = bmi
+                    
+                    //화면 넘기기
+                    self.performSegue(withIdentifier: "goToResult", sender: self)
+                }
+                
+                //화면 넘기기 전에 보내줄 데이터를 initialize
+                override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+                    //Safety Check.
+                    if (segue.identifier == "goToResult") {
+                        let destinationVC = segue.destination as! ResultViewController //Down Casting
+                        destinationVC.bmiValue = String(format: "%.1f", bmiValue) //다음 화면에 있는 value
+                    }
+                }
+                
+
+            }
+            
+    - 두 번째 화면, 받는 값
+    
+            import UIKit
+
+            class ResultViewController: UIViewController {
+                
+                var bmiValue: String? //nil일 수도 있기 때문에 optional 값을 준다.
+
+                @IBOutlet weak var bmiLabel: UILabel!
+                @IBOutlet weak var adviceLabel: UILabel!
+                
+                override func viewDidLoad() {
+                    super.viewDidLoad()
+                    if(bmiValue != nil){
+                        bmiLabel.text = bmiValue
+                    }
+                }
+                
+                @IBAction func recalculatePressed(_ sender: UIButton) {
+                    self.dismiss(animated: true, completion: nil)
+                }
+
+
+            }
+            
+- Swift Downcasting
+
+            
+            let destinationVC = segue.destination as! ResultViewController //이렇게 해줘야 다음 화면의 변수에 값을 지정해줄 수 있다.
+            
+            
+- Optional Deep
+        
+    -1. Unrwap
+            
+            value!
+        
+    -2. check for nil value
+    
+        if(value != nil){
+            value!
+        }
+
+    -3. Optional Binding
+    
+        if let safeValue = optional {
+            safeValue
+        }
+
+    -4. optional ?? default
+    
+        value ?? defaultValue
+        
+    -5. Optional Chaining (for class and structure)
+        
+        optional?.property
+        optional?.method()    //If this optional isn't `nil`, continue
+
 20.02.06
 
 - Structure
