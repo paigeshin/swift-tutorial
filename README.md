@@ -1,6 +1,173 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+20.02.09
+- dark mode를 고려해서 제품을 만들 것
+
+- Delegate Design Pattern
+    - 내 식으로 풀어서 얘기하자면, 특정 protocol을 공유하는 것 중에 super class 또는 struct가 아래의 object에게 일을 위임함
+    
+
+                //Cetificate
+                protocol AdvancedLifeSupport {
+                    func performCPR()
+                }
+
+                class EmergencyCallHandler {
+                    var delegate: AdvancedLifeSupport?
+                    
+                    func assessSituation(){
+                        print("Can you tell me what happened?")
+                    }
+                    
+                    func medicalEmergency(){
+                        delegate?.performCPR()
+                    }
+
+                }
+
+                struct Paramedic: AdvancedLifeSupport {
+                    
+                    init(handler: EmergencyCallHandler){
+                        handler.delegate = self
+                    }
+                    
+                    func performCPR() {
+                        print("The paramedic does chest compressions, 30 per second.")
+                    }
+                }
+
+                class Doctor: AdvancedLifeSupport {
+                    
+                    init(handler: EmergencyCallHandler) {
+                        handler.delegate = self
+                    }
+                    
+                    func performCPR() {
+                        print("The doctor does chest compressions, 30 per second.")
+                    }
+                    
+                    func useStethescope() {
+                        print("Listening for heart sounds")
+                    }
+                    
+                }
+
+                class Surgeon: Doctor {
+                    override func performCPR() {
+                        super.performCPR()
+                        print("Sings staying alive by the BeeGees")
+                    }
+                }
+
+                let emilio = EmergencyCallHandler()
+                let angela = Surgeon(handler: emilio)
+
+                emilio.assessSituation()
+                emilio.medicalEmergency()
+
+
+- Delegate가 적용된 swift iOS 예시
+
+            import UIKit
+
+            class WeatherViewController: UIViewController, UITextFieldDelegate {
+
+                @IBOutlet weak var conditionImageView: UIImageView!
+                @IBOutlet weak var temperatureLabel: UILabel!
+                @IBOutlet weak var cityLabel: UILabel!
+                @IBOutlet weak var searchTextField: UITextField!
+
+                var weatherManager:WeatherManager = WeatherManager()
+                
+                override func viewDidLoad() {
+                    super.viewDidLoad()
+                    searchTextField.delegate = self //이 부분이 delegate 부분이다
+                }
+
+
+                @IBAction func searchPressed(_ sender: UIButton) {
+                    searchTextField.endEditing(true)
+                    print(searchTextField.text!)
+                }
+
+                // User Pressed Return Button on Keyboard
+                func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+                    searchTextField.endEditing(true)
+                    print(searchTextField.text!)
+                    return true
+                }
+
+                // User Input Validation
+                func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+                    if(textField.text != ""){
+                        return true
+                    } else {
+                        textField.placeholder = "Type something"
+                        return false
+                    }
+                }
+
+                // User Stopped Editing
+                func textFieldDidEndEditing(_ textField: UITextField) {
+
+                    if let city = searchTextField.text {
+                        weatherManager.fetchWeather(cityName: city)
+                    }
+
+                    searchTextField.text = ""
+                }
+
+            }
+
+- Swift HTTP 통신 기본
+
+            import Foundation
+
+            struct WeatherManager {
+
+                let weatherURL: String = "https://api.openweathermap.org/data/2.5/weather";
+                let apiKey: String = "2a50132195767631db0cdfe509d8af9f"
+
+                func fetchWeather(cityName: String) {
+                    let urlString: String = "\(weatherURL)?q=\(cityName)&appid=\(apiKey)"
+                    performRequest(urlString: urlString)
+                }
+
+                func performRequest(urlString: String) {
+
+                    //1. create URL
+                    if let url: URL = URL(string: urlString) {
+
+                        //2. create a URLSession
+                        let session: URLSession = URLSession(configuration: .default)
+
+                        //3. Give the session a task
+                        let task: URLSessionDataTask = session.dataTask(with: url, completionHandler: handle)
+
+                        //4. Start the task
+                        task.resume()
+
+                    }
+
+                }
+
+                func handle(data: Data?, response: URLResponse?, error: Error?) {
+
+                    if (error != nil) {
+                        print(error!)
+                        return
+                    }
+
+                    if let safeData: Data = data {
+                        let dataString: String = String(data: safeData, encoding: .utf8)
+                        print(dataString!)
+                    }
+
+                }
+
+            }
+
 20.02.07
 
 - print two decimal point
