@@ -1,6 +1,104 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+20.02.10
+
+- function as a parameter
+        
+        func calculator(n1: Int, n2: Int, operation: (Int, Int) -> Int) -> Int {
+            return operation(n1, n2)
+        }
+
+        func add(no1: Int, no2: Int) -> Int {
+            return no1 + no2
+        }
+
+        let result = calculator(n1: 7, n2: 3, operation: add)
+        
+- closure - anonymous function
+
+        func calculator(n1: Int, n2: Int, operation: (Int, Int) -> Int) -> Int {
+            return operation(n1, n2)
+        }
+
+        calculator(n1: 4, n2: 5, operation: { (no1: Int, no2: Int) -> Int in
+            return no1 * no2
+        })
+        
+- withoout datatype
+
+        func calculator(n1: Int, n2: Int, opeartion: (Int, Int) -> Int) -> Int {
+            return opeartion(n1, n2)
+        }
+
+        let result = calculator(n1: 2, n2: 3, opeartion: { (no1, no2) -> Int in 
+         return no1 * no2 
+        })
+
+- in one line
+
+        func calculator(n1: Int, n2: Int, opeartion: (Int, Int) -> Int) -> Int {
+            return opeartion(n1, n2)
+        }
+
+        let result = calculator(n1: 2, n2: 3, opeartion: { (no1, no2) -> Int in no1 * no2 })
+        
+- anonymous parameter names using $  $0 → first parameter, $1 → second parameter
+
+        func calculator(n1: Int, n2: Int, opeartion: (Int, Int) -> Int) -> Int {
+            return opeartion(n1, n2)
+        }
+        
+        let result = calculator(n1: 2, n2: 3, opeartion: { $0 * $1 })
+        
+- Map
+    -❗️Swift에서 closure function 내부에 있는 내용이 함수에 접근하려면 self keyword를 붙여야 한다.
+
+        let array = [1, 2, 3, 4, 5, 6]
+
+        func addOne(n1: Int) -> Int {
+                return n1 + 1
+        }
+
+        let normalArray = array.map(addOne)
+
+        let newStringArray = array.map({"\($0)"})
+        let newPlusArray = array.map({(n1:Int) -> Int in n1 + 1})
+
+
+- SF Symbol
+    - cloud.bolt 식으로 이름이 주어짐
+    
+            //Computed Properties
+            var conditionName: String {
+                switch conditionId {
+                case 200...232:
+                    return "cloud.bolt"
+                case 300...321:
+                    return "cloud.drizzle"
+                case 500...531:
+                    return "cloud.rain"
+                case 600...622:
+                    return "cloud.snow"
+                case 701...781:
+                    return "cloud.fog"
+                case 800:
+                    return "sun.max"
+                case 801...804:
+                    return "cloud.bolt"
+                default:
+                    return "cloud"
+                }
+            }
+
+-SF Symbol 사용하는 방식
+
+         self.conditionImageView.image = UIImage(systemName: weather.conditionName)
+        
+- Computed Properties
+
+            
+
 20.02.09
 - dark mode를 고려해서 제품을 만들 것
 
@@ -166,6 +264,243 @@
 
                 }
 
+            }
+
+- Computed Properties
+
+            struct WeatherModel {
+                let conditionId: Int
+                let cityName: String
+                let temperature: Double
+
+                var temperatureString: String {
+                    String(format: "%.1f", temperature)
+                }
+
+                //Computed Properties
+                var conditionName: String {
+                    switch conditionId {
+                    case 200...232:
+                        return "cloud.bolt"
+                    case 300...321:
+                        return "cloud.drizzle"
+                    case 500...531:
+                        return "cloud.rain"
+                    case 600...622:
+                        return "cloud.snow"
+                    case 701...781:
+                        return "cloud.fog"
+                    case 800:
+                        return "sun.max"
+                    case 801...804:
+                        return "cloud.bolt"
+                    default:
+                        return "cloud"
+                    }
+                }
+
+
+            }
+            
+- Type Alias
+
+            typealias Codable = Decodable & Encodable
+            
+- Parameter Names, external - internal 
+
+            func myFunc(name: Type) {
+                print(name)
+            }
+                
+- DispatchQueue
+    
+            func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
+                //UI에 데이터를 곧바로 업데이트 할 수 없다. => 안드로이드와 비슷함. Main Thread만 UI View에 접근할 수 있다.
+                //Background로 UI를 update 해야한다.
+                DispatchQueue.main.async { //closure
+                    self.temperatureLabel.text = weather.temperatureString
+                }
+            }
+
+- Extensions
+
+            import UIKit
+
+            extension Double {
+                
+                func round(to places: Int) -> Double {
+                    let precisionNumber = pow(10, Double(places))
+                    var n = self
+                    n = n * precisionNumber
+                    n.round()
+                    n = n / precisionNumber
+                    return n
+                }
+                
+            }
+
+            var myDouble = 3.14159
+
+            myDouble.round(to: 3)
+            
+            
+            import UIKit
+
+            //let button = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+            //button.backgroundColor = .red
+            //button.layer.cornerRadius = 25
+            //button.clipsToBounds = true
+
+            extension UIButton {
+                func makeCircular(){
+                    self.clipsToBounds = true
+                    self.layer.cornerRadius = self.frame.size.width / 2
+                }
+            }
+
+            let button = UIButton(frame:CGRect(x: 0, y: 0, width: 50, height: 50))
+            button.backgroundColor = .red
+            button.makeCircular()
+            
+- protocol extension
+
+            protocol CanFly {
+                    func fly()
+            }
+
+            extension CanFly {
+                    func fly(){
+                            print("The object takes off into the air")
+                    }
+            }
+            
+- extension을 이용한 코드 분할
+
+            //
+            //  ViewController.swift
+            //  Clima
+            //
+            //  Created by Angela Yu on 01/09/2019.
+            //  Copyright © 2019 App Brewery. All rights reserved.
+            //
+
+            import UIKit
+
+            class WeatherViewController: UIViewController {
+
+                @IBOutlet weak var conditionImageView: UIImageView!
+                @IBOutlet weak var temperatureLabel: UILabel!
+                @IBOutlet weak var cityLabel: UILabel!
+                @IBOutlet weak var searchTextField: UITextField!
+
+                var weatherManager: WeatherManager = WeatherManager()
+
+                override func viewDidLoad() {
+                    super.viewDidLoad()
+                    weatherManager.delegate = self
+                    searchTextField.delegate = self
+                }
+
+            }
+
+            //Mark: - UITextFieldDelegate
+
+            extension WeatherViewController: UITextFieldDelegate {
+
+                @IBAction func searchPressed(_ sender: UIButton) {
+                    searchTextField.endEditing(true)
+                    print(searchTextField.text!)
+                }
+
+
+                // User Pressed Return Button on Keyboard
+                func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+                    searchTextField.endEditing(true)
+                    print(searchTextField.text!)
+                    return true
+                }
+
+                // User Input Validation
+                func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+                    if (textField.text != "") {
+                        return true
+                    } else {
+                        textField.placeholder = "Type something"
+                        return false
+                    }
+                }
+
+                // User Stopped Editing
+                func textFieldDidEndEditing(_ textField: UITextField) {
+                    if let city = searchTextField.text {
+                        weatherManager.fetchWeather(cityName: city)
+                    }
+                    searchTextField.text = ""
+                }
+
+            }
+
+            extension WeatherViewController: WeatherManagerDelegate {
+
+                func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
+                    //UI에 데이터를 곧바로 업데이트 할 수 없다. => 안드로이드와 비슷함. Main Thread만 UI View에 접근할 수 있다.
+                    //Background로 UI를 update 해야한다.
+                    DispatchQueue.main.async { //closure
+                        self.temperatureLabel.text = weather.temperatureString
+                        self.conditionImageView.image = UIImage(systemName: weather.conditionName)
+                    }
+                }
+
+                func didFailWithError(error: Error) {
+                    print(error)
+                }
+
+            }
+            
+- location
+
+            import UIKit
+            import CoreLocation
+
+            class WeatherViewController: UIViewController {
+
+                @IBOutlet weak var iconImageView: UIImageView!
+                @IBOutlet weak var temperatureLabel: UILabel!
+                @IBOutlet weak var cityLabel: UILabel!
+                @IBOutlet weak var searchTextField: UITextField!
+
+                var weatherManager: WeatherManager = WeatherManager()
+                let locationManager: CLLocationManager = CLLocationManager()
+
+                override func viewDidLoad() {
+                    super.viewDidLoad()
+                    locationManager.delegate = self
+                    locationManager.requestWhenInUseAuthorization()
+                    locationManager.requestLocation()
+
+                    weatherManager.delegate = self
+                    searchTextField.delegate = self
+                }
+
+                @IBAction func updateWeatherButtonPressed(_ sender: UIButton) {
+                    locationManager.requestLocation()
+                }
+                
+            }
+
+            extension WeatherViewController: CLLocationManagerDelegate {
+                public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+                    if let location = locations.last {
+                        locationManager.stopUpdatingLocation()
+                        let lat = location.coordinate.latitude
+                        let lon = location.coordinate.longitude
+                        weatherManager.fetchWeather(latitude: lat, longitude: lon)
+                    }
+                }
+
+                public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+                    print(error)
+                }
             }
 
 20.02.07
