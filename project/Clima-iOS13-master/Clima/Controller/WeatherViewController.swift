@@ -7,26 +7,60 @@
 //
 
 import UIKit
+import CoreLocation
 
-class WeatherViewController: UIViewController, UITextFieldDelegate {
+class WeatherViewController: UIViewController {
 
     @IBOutlet weak var conditionImageView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var searchTextField: UITextField!
 
-    var weatherManager:WeatherManager = WeatherManager()
-    
+    var weatherManager: WeatherManager = WeatherManager()
+
+    let locationManager: CLLocationManager = CLLocationManager()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
+
+        weatherManager.delegate = self
         searchTextField.delegate = self
     }
 
+    @IBAction func updateWeatherButtonPressed(_ sender: UIButton) {
+        locationManager.requestLocation()
+    }
+
+}
+
+extension WeatherViewController: CLLocationManagerDelegate {
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            locationManager.stopUpdatingLocation()
+            let lat = location.coordinate.latitude
+            let lon = location.coordinate.longitude
+            weatherManager.fetchWeather(latitude: lat, longitude: lon)
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
+    }
+
+
+}
+
+extension WeatherViewController: UITextFieldDelegate {
 
     @IBAction func searchPressed(_ sender: UIButton) {
         searchTextField.endEditing(true)
         print(searchTextField.text!)
     }
+
 
     // User Pressed Return Button on Keyboard
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -37,7 +71,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
 
     // User Input Validation
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        if(textField.text != ""){
+        if (textField.text != "") {
             return true
         } else {
             textField.placeholder = "Type something"
@@ -47,12 +81,28 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
 
     // User Stopped Editing
     func textFieldDidEndEditing(_ textField: UITextField) {
-
         if let city = searchTextField.text {
             weatherManager.fetchWeather(cityName: city)
         }
-
         searchTextField.text = ""
+    }
+
+}
+
+extension WeatherViewController: WeatherManagerDelegate {
+
+    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
+        //UI에 데이터를 곧바로 업데이트 할 수 없다. => 안드로이드와 비슷함. Main Thread만 UI View에 접근할 수 있다.
+        //Background로 UI를 update 해야한다.
+        DispatchQueue.main.async { //closure
+            self.temperatureLabel.text = weather.temperatureString
+            self.conditionImageView.image = UIImage(systemName: weather.conditionName)
+            self.cityLabel.text = weather.cityName
+        }
+    }
+
+    func didFailWithError(error: Error) {
+        print(error)
     }
 
 }
