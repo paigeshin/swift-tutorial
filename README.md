@@ -1,6 +1,178 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+20.02.12
+
+- Thrid Party Library
+
+        sudo gem install cocoapods
+
+        pod setup --verbose
+
+        pod --version
+
+        pod init
+        
+-  Podfile
+
+        platform :ios, '13.0'
+
+        target 'Flash Chat iOS13' do
+          use_frameworks!
+
+          # Pods for Flash Chat iOS13
+
+          pod 'CLTypingLabel'  #새로 추가할 module
+
+        end
+
+- Implemenation
+
+        import UIKit
+        import CLTypingLabel //
+
+        class WelcomeViewController: UIViewController {
+
+            @IBOutlet weak var titleLabel: CLTypingLabel!
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                
+                titleLabel.text = "⚡️FlashChat"
+                    
+            }
+            
+        }
+        
+- Cocoa Pod
+
+        platform :ios, '13.0'
+
+        target 'Flash Chat iOS13' do
+          use_frameworks!
+
+          # Pods for Flash Chat iOS13
+
+        end
+        
+- NavigationController
+
+
+        @IBAction func logoutPressed(_ sender: UIBarButtonItem) {
+            
+            let firebaseauth = Auth.auth()
+            do {
+                try firebaseauth.signOut()
+                navigationController?.popToRootViewController(animated: true)
+                
+            } catch let signOutError as NSError {
+                print("Error signing out: %@", signOutError)
+            }
+            
+        }
+        
+- AppBar Handle
+
+        override func viewDidLoad() {
+               super.viewDidLoad()
+               title = "⚡️FlashChat"
+               navigationItem.hidesBackButton = true
+        }
+        
+- Using a Constants File and Understanding the static keyword
+
+        struct K {
+            static let appName = "⚡️FlashChat"
+            static let cellIdentifier = "ReusableCell"
+            static let cellNibName = "MessageCell"
+            static let registerSegue = "RegisterToChat"
+            static let loginSegue = "LoginToChat"
+            
+            struct BrandColors {
+                static let purple = "BrandPurple"
+                static let lightPurple = "BrandLightPurple"
+                static let blue = "BrandBlue"
+                static let lighBlue = "BrandLightBlue"
+            }
+            
+            struct FStore {
+                static let collectionName = "messages"
+                static let senderField = "sender"
+                static let bodyField = "body"
+                static let dateField = "date"
+            }
+        }
+        
+- how to access it
+
+        let titleText = K.appName
+        
+- Table View
+    - Table View Cell
+    - Table View Controller
+    - iOS의 recyclerview
+    
+            import UIKit
+            import Firebase
+            
+            class ChatViewController: UIViewController {
+                
+                let firebaseauth = Auth.auth()
+            
+                @IBOutlet weak var tableView: UITableView!
+                @IBOutlet weak var messageTextfield: UITextField!
+                
+                var messages: [Message] = [
+                    Message(sender:"1@2.com", body: "Hey!"),
+                    Message(sender:"a@b.com", body: "Hello!"),
+                    Message(sender:"1@2.com", body: "What's up?"),
+                ]
+                
+                override func viewDidLoad() {
+                    super.viewDidLoad()
+                    tableView.dataSource = self
+                    title = K.appName
+                    navigationItem.hidesBackButton = true
+                }
+                
+                @IBAction func sendPressed(_ sender: UIButton) {
+                }
+                
+                @IBAction func logoutPressed(_ sender: UIBarButtonItem) {
+                    
+                    do {
+                        try firebaseauth.signOut()
+                        navigationController?.popToRootViewController(animated: true)
+                        
+                    } catch let signOutError as NSError {
+                        print("Error signing out: %@", signOutError)
+                    }
+                    
+                }
+                
+            }
+            
+            extension ChatViewController: UITableViewDataSource {
+                
+                func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                    return messages.count
+                }
+                
+                func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: K.cellIdentifier, for: indexPath)
+                    cell.textLabel?.text = messages[indexPath.row].body
+                    return cell
+                }
+                
+            }
+            
+            //Click Event Handler
+            extension ChatViewController: UITableViewDelegate {
+                func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+                    print(indexPath.row)
+                }
+            }
+
 20.02.10
 
 - function as a parameter
