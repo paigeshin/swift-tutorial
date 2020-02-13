@@ -1,6 +1,494 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+20.02.13
+
+- Custoizing Cells in TableView using a .xib File (Android itemview)
+    - Cocoa file, MessageCell.xib 로 만들기
+    - Create a new `UITableViewCell` with `XIB` file
+    - MessageCell
+        - UIView
+        - Label
+        - ImageView
+    - Constraint
+        - ImageView width & height, 40 & 40
+        - StackView 10, 10, 10, 10
+        - label 10, 10, 10, 10
+    - StackView, spacing 20 (padding 또는 margin)
+    
+- Register the TableCell into the TableView
+    - Register Customized ItemView
+    
+    - viewDidLoad
+    
+            tableView.register(UINib(nibName: K.cellNibName, bundle: nil),forCellReuseIdentifier: K.cellIdentifier)
+    
+    - data binding where tableview is declared as `outlet`
+    
+            extension ChatViewController: UITableViewDataSource {
+                
+                func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                    return messages.count
+                }
+                
+                func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                    //Data Binding
+                    let cell = tableView.dequeueReusableCell(withIdentifier: K.cellIdentifier, for: indexPath) as! MessageCell
+            //        cell.textLabel?.text = messages[indexPath.row].body
+                    return cell
+                }
+                
+            }
+    
+- Control thew view (Table Cell)
+
+        import UIKit
+
+        class MessageCell: UITableViewCell {
+
+            @IBOutlet weak var messageBubble: UIView!
+            @IBOutlet weak var label: UILabel!
+            @IBOutlet weak var rightImageView: UIImageView!
+            
+            override func awakeFromNib() {
+                super.awakeFromNib()
+                
+                        //Message View의 모서리 부분을 둥글게 만들기
+                messageBubble.layer.cornerRadius = messageBubble.frame.size.height / 5
+            }
+
+            override func setSelected(_ selected: Bool, animated: Bool) {
+                super.setSelected(selected, animated: animated)
+
+                // Configure the view for the selected state
+            }
+            
+        }
+        
+- Chat Applicatoin Necessary Property
+    - 각 셀마다 interaction은 disable 한다
+    - Label => lines: 0, 이렇게 해야 label 크기에 따라 텍스트가 짤리는 경우가 없어짐
+    
+-  EventHandler  
+    - 원래는 TableView를 사용할 때, UITableViewDataSource로 로직처리가 가능.
+    - UITableViewDelegate도 존재
+    
+            override func viewDidLoad() {
+                    super.viewDidLoad()
+                    tableView.delegate = self
+                    title = K.appName
+                    navigationItem.hidesBackButton = true
+                    
+                    //Register ItemView
+                    tableView.register(UINib(nibName: K.cellNibName, bundle: nil),
+                    forCellReuseIdentifier: K.cellIdentifier)
+                    
+                }
+
+            //Click Event Handler
+            extension ChatViewController: UITableViewDelegate {
+                func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+                    print(indexPath.row)
+                }
+            }
+ 
+ - Type Casting
+ `as` , `as?` , `as!` , `is`
+ 
+    -`is` => Type Checking
+    
+        import Foundation
+
+        class Animal {
+            var name: String
+            
+            init(n: String){
+                name = n
+            }
+        }
+
+        class Human: Animal {
+            func code(){
+                print("Typing away...")
+            }
+        }
+
+        class Fish: Animal{
+            func breathUnderWater(){
+                print("Breathing under water.")
+            }
+        }
+
+        let angela = Human(n: "Angela Yu")
+        let jack = Human(n: "Jack Bauer")
+        let nemo = Fish(n: "Nemo")
+
+        let neighbours = [angela, jack, nemo]
+
+        func findNemo(from animals: [Animal]){
+            for animal in animals {
+                        //Type Check
+                if animal is Fish {
+                    print(animal.name)
+                }
+            }
+        }
+
+        //Type Check
+        if (neighbours[0] is Human){
+            print("First Neighbour is a Human")
+        }
+        
+    - `!` forced downcasting
+        
+            func findNemo(from animals: [Animal]){
+                for animal in animals {
+                    if animal is Fish {
+                        //forced downcasting
+                        let fish = animal as! Fish
+                        fish.breathUnderWater()
+                    }
+                }
+            }
+            
+        - `?` check if it is availbe for `fish`,  데이터 타입이 downcasting이 될 수 있는지 확인해준다.
+        
+                if let fish = neighbours[1] as? Fish {
+                    fish.breathUnderWater()
+                } else {
+                    print("Casting has failed")
+                }
+        
+        - `as` -> Upcasting
+        
+                let animalFish = fish as Animal
+
+- Any, AnyObject, NSObject
+    - any : It encompasses all objects, basically `any data type`
+    
+            let angela:Human = Human(n: "Angela Yu")
+            let jack:Human = Human(n: "Jack Bauer")
+            let nemo:Fish = Fish(n: "Nemo")
+            let num:Int = 12
+
+            //Any
+            let neighbours:[Any] = [angela, jack, nemo, num] //원래는 이렇게 다른 타입의 데이터가 같은 어레이에 있을 수 없다
+
+    - AnyObject -> AnyObject: Object created from `class`
+
+    - NSObject -> NSObject: Object created from `foundation`
+    
+- Store Data - Firestore
+    - Firestore (More features, e.g. cloud firestore)
+    - Realtime Database (JSON DB)
+        
+            @IBAction func sendPressed(_ sender: UIButton) {
+                if  let mesasgeBody = messageTextfield?.text,
+                    let messageSender = Auth.auth().currentUser?.email {
+                    
+                    db.collection(K.FStore.collectionName).addDocument(data: [
+                        K.FStore.senderField: messageSender,
+                        K.FStore.bodyField: mesasgeBody
+                    ]){ (error) in
+                        if let e = error {
+                            print("There was an issue saving data to firestore, \(e)")
+                        } else {
+                            print("Successfully saved data.")
+                        }
+                    }
+                    
+                }
+            }
+
+- Retrieve data - Firestore
+
+            func loadMessages() {
+                
+                db.collection(K.FStore.collectionName).addSnapshotListener { (querySnapshot, error) in
+                    
+                    self.messages = []
+                    
+                    if let e = error {
+                        print("There was an issue retrieving data from Firestore. \(e)")
+                    } else {
+                        if let snapshotDocuments = querySnapshot?.documents {
+                            for doc in snapshotDocuments {
+                                let data = doc.data()
+                                if  let sender = data[K.FStore.senderField] as? String, //Dictionary
+                                    let messageBody = data[K.FStore.bodyField] as? String //Dictionary
+                                {
+                                    let newMessage = Message(sender: sender, body: messageBody)
+                                    
+                                    self.messages.append(newMessage)
+                            
+                                    DispatchQueue.main.async {
+                                        self.tableView.reloadData()
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+- Listen for realtime updates
+    - addDocument대신, addSnapshotListener를 붙이면, 데이터가 바뀔 때마다 실시간으로 업데이트 된다
+
+        
+            func loadMessages() {
+                
+                db.collection(K.FStore.collectionName).addSnapshotListener { (querySnapshot, error) in
+                    
+                    self.messages = []
+                    
+                    if let e = error {
+                        print("There was an issue retrieving data from Firestore. \(e)")
+                    } else {
+                        if let snapshotDocuments = querySnapshot?.documents {
+                            for doc in snapshotDocuments {
+                                let data = doc.data()
+                                if  let sender = data[K.FStore.senderField] as? String, //Dictionary
+                                    let messageBody = data[K.FStore.bodyField] as? String //Dictionary
+                                {
+                                    let newMessage = Message(sender: sender, body: messageBody)
+                                    
+                                    self.messages.append(newMessage)
+                            
+                                    DispatchQueue.main.async {
+                                        self.tableView.reloadData()
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        
+- How to manage the keyboard and use the swift package manager
+    - The library you use must have `package.swift` file to use `swift package manage`
+    
+            func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                    // Override point for customization after application launch.
+                    FirebaseApp.configure()
+                    Firestore.firestore()
+                    IQKeyboardManager.shared.enable = true
+                    IQKeyboardManager.shared.enableAutoToolbar = false
+                    IQKeyboardManager.shared.shouldResignOnTouchOutside = true
+                    
+                    return true
+            }
+
+- UI Improvement
+    - Automatic Scroll
+    - Customize Navigation bar
+    
+    - android 에서 따지면 onBindViewHolder에서 어떤 유저인지에 따라서 메시지를 다르게 보여준다
+    
+            extension ChatViewController: UITableViewDataSource {
+                
+                func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                    return messages.count
+                }
+                
+                func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                    //Data Binding
+                    let message = messages[indexPath.row]
+                    let cell = tableView.dequeueReusableCell(withIdentifier: K.cellIdentifier, for: indexPath) as! MessageCell
+                    cell.label.text = message.body
+                    
+                    //This is a message from the current user
+                    if message.sender == Auth.auth().currentUser?.email {
+                        cell.leftImageView.isHidden = true
+                        cell.rightImageView.isHidden = false
+                        cell.messageBubble.backgroundColor = UIColor(named: K.BrandColors.lightPurple)
+                    } else {
+                        cell.rightImageView.isHidden = false
+                        cell.rightImageView.isHidden = true
+                        cell.messageBubble.backgroundColor = UIColor(named: K.BrandColors.blue)
+                    }
+                    
+
+                    
+                    return cell
+                }
+                
+            }
+        
+        - automatic scroll
+        
+                self.tableView.reloadData()
+                let indexPath: IndexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+
+        - 전체
+        
+                func loadMessages() {
+                    
+                    db
+                        .collection(K.FStore.collectionName)
+                        .order(by: K.FStore.dateField)
+                        .addSnapshotListener { (querySnapshot, error) in
+                        
+                        self.messages = []
+                        
+                        if let e = error {
+                            print("There was an issue retrieving data from Firestore. \(e)")
+                        } else {
+                            if let snapshotDocuments = querySnapshot?.documents {
+                                for doc in snapshotDocuments {
+                                    let data = doc.data()
+                                    if  let sender = data[K.FStore.senderField] as? String, //Dictionary
+                                        let messageBody = data[K.FStore.bodyField] as? String //Dictionary
+                                    {
+                                        let newMessage = Message(sender: sender, body: messageBody)
+                                        
+                                        self.messages.append(newMessage)
+                                
+                                        DispatchQueue.main.async {
+                                            self.tableView.reloadData()
+                                            let indexPath: IndexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                                            self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+- Navigation Control in `ViewController`
+    - ! it's always good to use `super.method()` whenever you override the method from `super class`
+
+        import UIKit
+
+            class WelcomeViewController: UIViewController {
+
+                @IBOutlet weak var titleLabel: UILabel!
+                
+                override func viewWillAppear(_ animated: Bool) {
+                    super.viewWillAppear(animated)
+                    navigationController?.isNavigationBarHidden = true
+                }
+                
+                override func viewWillDisappear(_ animated: Bool) {
+                    super.viewWillDisappear(animated)
+                    navigationController?.isNavigationBarHidden = false
+                }
+                
+                override func viewDidLoad() {
+                    super.viewDidLoad()
+                    
+                    titleLabel.text = ""
+                    var charIndex:Double = 0
+                    let titleText = K.appName
+                    for letter in titleText {
+                        Timer.scheduledTimer(withTimeInterval: 0.1 * charIndex, repeats: false, block: {(timer) in
+                            self.titleLabel.text?.append(letter)
+                        })
+                        charIndex += 1
+                    }
+                        
+                }
+
+                
+            }
+            
+- Swift LifeCycle
+
+            //
+            //  ViewController.swift
+            //  LifeCycle
+            //
+            //  Created by shin seunghyun on 2020/02/13.
+            //  Copyright © 2020 shin seunghyun. All rights reserved.
+            //
+
+            import UIKit
+
+            class ViewController: UIViewController {
+
+                override func viewDidLoad() {
+                    super.viewDidLoad()
+                    // Do any additional setup after loading the view.
+                }
+
+                override func viewWillAppear(_ animated: Bool) {
+                    super.viewWillAppear(animated)
+                }
+                
+                override func viewDidAppear(_ animated: Bool) {
+                    super.viewDidAppear(animated)
+                }
+                
+                override func viewWillDisappear(_ animated: Bool) {
+                    super.viewWillDisappear(animated)
+                }
+                
+                override func viewDidDisappear(_ animated: Bool) {
+                    super.viewDidDisappear(animated)
+                }
+
+            }
+
+
+- SceneDelegate.swift , for lifecycle
+
+            //
+            //  SceneDelegate.swift
+            //  LifeCycle
+            //
+            //  Created by shin seunghyun on 2020/02/13.
+            //  Copyright © 2020 shin seunghyun. All rights reserved.
+            //
+
+            import UIKit
+
+            class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+
+                var window: UIWindow?
+
+
+                func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+                    // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
+                    // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
+                    // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+                    guard let _ = (scene as? UIWindowScene) else { return }
+                }
+
+                func sceneDidDisconnect(_ scene: UIScene) {
+                    // Called as the scene is being released by the system.
+                    // This occurs shortly after the scene enters the background, or when its session is discarded.
+                    // Release any resources associated with this scene that can be re-created the next time the scene connects.
+                    // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
+                }
+
+                func sceneDidBecomeActive(_ scene: UIScene) {
+                    // Called when the scene has moved from an inactive state to an active state.
+                    // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+                }
+
+                func sceneWillResignActive(_ scene: UIScene) {
+                    // Called when the scene will move from an active state to an inactive state.
+                    // This may occur due to temporary interruptions (ex. an incoming phone call).
+                }
+
+                func sceneWillEnterForeground(_ scene: UIScene) {
+                    // Called as the scene transitions from the background to the foreground.
+                    // Use this method to undo the changes made on entering the background.
+                }
+
+                func sceneDidEnterBackground(_ scene: UIScene) {
+                    // Called as the scene transitions from the foreground to the background.
+                    // Use this method to save data, release shared resources, and store enough scene-specific state information
+                    // to restore the scene back to its current state.
+                }
+
+
+            }
+
 20.02.12
 
 - Thrid Party Library
