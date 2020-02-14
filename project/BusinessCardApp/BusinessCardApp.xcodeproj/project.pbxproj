@@ -1,0 +1,617 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		284AC51523F5788E00AB3845 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284AC51423F5788E00AB3845 /* AppDelegate.swift */; };
+		284AC51723F5788E00AB3845 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284AC51623F5788E00AB3845 /* SceneDelegate.swift */; };
+		284AC51923F5788E00AB3845 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284AC51823F5788E00AB3845 /* ContentView.swift */; };
+		284AC51B23F5788E00AB3845 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 284AC51A23F5788E00AB3845 /* Assets.xcassets */; };
+		284AC51E23F5788E00AB3845 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 284AC51D23F5788E00AB3845 /* Preview Assets.xcassets */; };
+		284AC52123F5788E00AB3845 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 284AC51F23F5788E00AB3845 /* LaunchScreen.storyboard */; };
+		284AC52C23F5788F00AB3845 /* BusinessCardAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284AC52B23F5788F00AB3845 /* BusinessCardAppTests.swift */; };
+		284AC53723F5788F00AB3845 /* BusinessCardAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284AC53623F5788F00AB3845 /* BusinessCardAppUITests.swift */; };
+		284AC54C23F5820F00AB3845 /* Pacifico-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 284AC54B23F5820F00AB3845 /* Pacifico-Regular.ttf */; };
+		284AC54D23F5820F00AB3845 /* Pacifico-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 284AC54B23F5820F00AB3845 /* Pacifico-Regular.ttf */; };
+		284AC54E23F5820F00AB3845 /* Pacifico-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 284AC54B23F5820F00AB3845 /* Pacifico-Regular.ttf */; };
+		284AC55023F58DE500AB3845 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284AC54F23F58DE500AB3845 /* InfoView.swift */; };
+		284AC55123F58DE500AB3845 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284AC54F23F58DE500AB3845 /* InfoView.swift */; };
+		284AC55223F58DE500AB3845 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284AC54F23F58DE500AB3845 /* InfoView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		284AC52823F5788F00AB3845 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 284AC50923F5788E00AB3845 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 284AC51023F5788E00AB3845;
+			remoteInfo = BusinessCardApp;
+		};
+		284AC53323F5788F00AB3845 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 284AC50923F5788E00AB3845 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 284AC51023F5788E00AB3845;
+			remoteInfo = BusinessCardApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		284AC51123F5788E00AB3845 /* BusinessCardApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BusinessCardApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		284AC51423F5788E00AB3845 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		284AC51623F5788E00AB3845 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		284AC51823F5788E00AB3845 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		284AC51A23F5788E00AB3845 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		284AC51D23F5788E00AB3845 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		284AC52023F5788E00AB3845 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		284AC52223F5788E00AB3845 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		284AC52723F5788F00AB3845 /* BusinessCardAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BusinessCardAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		284AC52B23F5788F00AB3845 /* BusinessCardAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessCardAppTests.swift; sourceTree = "<group>"; };
+		284AC52D23F5788F00AB3845 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		284AC53223F5788F00AB3845 /* BusinessCardAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BusinessCardAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		284AC53623F5788F00AB3845 /* BusinessCardAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessCardAppUITests.swift; sourceTree = "<group>"; };
+		284AC53823F5788F00AB3845 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		284AC54B23F5820F00AB3845 /* Pacifico-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pacifico-Regular.ttf"; path = "../../../../../../../../Downloads/Pacifico 3/Pacifico-Regular.ttf"; sourceTree = "<group>"; };
+		284AC54F23F58DE500AB3845 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		284AC50E23F5788E00AB3845 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		284AC52423F5788F00AB3845 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		284AC52F23F5788F00AB3845 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		284AC50823F5788E00AB3845 = {
+			isa = PBXGroup;
+			children = (
+				284AC51323F5788E00AB3845 /* BusinessCardApp */,
+				284AC52A23F5788F00AB3845 /* BusinessCardAppTests */,
+				284AC53523F5788F00AB3845 /* BusinessCardAppUITests */,
+				284AC51223F5788E00AB3845 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		284AC51223F5788E00AB3845 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				284AC51123F5788E00AB3845 /* BusinessCardApp.app */,
+				284AC52723F5788F00AB3845 /* BusinessCardAppTests.xctest */,
+				284AC53223F5788F00AB3845 /* BusinessCardAppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		284AC51323F5788E00AB3845 /* BusinessCardApp */ = {
+			isa = PBXGroup;
+			children = (
+				284AC54423F579CB00AB3845 /* fonts */,
+				284AC51423F5788E00AB3845 /* AppDelegate.swift */,
+				284AC51623F5788E00AB3845 /* SceneDelegate.swift */,
+				284AC51823F5788E00AB3845 /* ContentView.swift */,
+				284AC51A23F5788E00AB3845 /* Assets.xcassets */,
+				284AC51F23F5788E00AB3845 /* LaunchScreen.storyboard */,
+				284AC52223F5788E00AB3845 /* Info.plist */,
+				284AC51C23F5788E00AB3845 /* Preview Content */,
+				284AC54F23F58DE500AB3845 /* InfoView.swift */,
+			);
+			path = BusinessCardApp;
+			sourceTree = "<group>";
+		};
+		284AC51C23F5788E00AB3845 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				284AC51D23F5788E00AB3845 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		284AC52A23F5788F00AB3845 /* BusinessCardAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				284AC52B23F5788F00AB3845 /* BusinessCardAppTests.swift */,
+				284AC52D23F5788F00AB3845 /* Info.plist */,
+			);
+			path = BusinessCardAppTests;
+			sourceTree = "<group>";
+		};
+		284AC53523F5788F00AB3845 /* BusinessCardAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				284AC53623F5788F00AB3845 /* BusinessCardAppUITests.swift */,
+				284AC53823F5788F00AB3845 /* Info.plist */,
+			);
+			path = BusinessCardAppUITests;
+			sourceTree = "<group>";
+		};
+		284AC54423F579CB00AB3845 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				284AC54B23F5820F00AB3845 /* Pacifico-Regular.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		284AC51023F5788E00AB3845 /* BusinessCardApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 284AC53B23F5788F00AB3845 /* Build configuration list for PBXNativeTarget "BusinessCardApp" */;
+			buildPhases = (
+				284AC50D23F5788E00AB3845 /* Sources */,
+				284AC50E23F5788E00AB3845 /* Frameworks */,
+				284AC50F23F5788E00AB3845 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BusinessCardApp;
+			productName = BusinessCardApp;
+			productReference = 284AC51123F5788E00AB3845 /* BusinessCardApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		284AC52623F5788F00AB3845 /* BusinessCardAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 284AC53E23F5788F00AB3845 /* Build configuration list for PBXNativeTarget "BusinessCardAppTests" */;
+			buildPhases = (
+				284AC52323F5788F00AB3845 /* Sources */,
+				284AC52423F5788F00AB3845 /* Frameworks */,
+				284AC52523F5788F00AB3845 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				284AC52923F5788F00AB3845 /* PBXTargetDependency */,
+			);
+			name = BusinessCardAppTests;
+			productName = BusinessCardAppTests;
+			productReference = 284AC52723F5788F00AB3845 /* BusinessCardAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		284AC53123F5788F00AB3845 /* BusinessCardAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 284AC54123F5788F00AB3845 /* Build configuration list for PBXNativeTarget "BusinessCardAppUITests" */;
+			buildPhases = (
+				284AC52E23F5788F00AB3845 /* Sources */,
+				284AC52F23F5788F00AB3845 /* Frameworks */,
+				284AC53023F5788F00AB3845 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				284AC53423F5788F00AB3845 /* PBXTargetDependency */,
+			);
+			name = BusinessCardAppUITests;
+			productName = BusinessCardAppUITests;
+			productReference = 284AC53223F5788F00AB3845 /* BusinessCardAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		284AC50923F5788E00AB3845 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1130;
+				LastUpgradeCheck = 1130;
+				ORGANIZATIONNAME = "shin seunghyun";
+				TargetAttributes = {
+					284AC51023F5788E00AB3845 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+					284AC52623F5788F00AB3845 = {
+						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = 284AC51023F5788E00AB3845;
+					};
+					284AC53123F5788F00AB3845 = {
+						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = 284AC51023F5788E00AB3845;
+					};
+				};
+			};
+			buildConfigurationList = 284AC50C23F5788E00AB3845 /* Build configuration list for PBXProject "BusinessCardApp" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 284AC50823F5788E00AB3845;
+			productRefGroup = 284AC51223F5788E00AB3845 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				284AC51023F5788E00AB3845 /* BusinessCardApp */,
+				284AC52623F5788F00AB3845 /* BusinessCardAppTests */,
+				284AC53123F5788F00AB3845 /* BusinessCardAppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		284AC50F23F5788E00AB3845 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				284AC52123F5788E00AB3845 /* LaunchScreen.storyboard in Resources */,
+				284AC54C23F5820F00AB3845 /* Pacifico-Regular.ttf in Resources */,
+				284AC51E23F5788E00AB3845 /* Preview Assets.xcassets in Resources */,
+				284AC51B23F5788E00AB3845 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		284AC52523F5788F00AB3845 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				284AC54D23F5820F00AB3845 /* Pacifico-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		284AC53023F5788F00AB3845 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				284AC54E23F5820F00AB3845 /* Pacifico-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		284AC50D23F5788E00AB3845 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				284AC55023F58DE500AB3845 /* InfoView.swift in Sources */,
+				284AC51523F5788E00AB3845 /* AppDelegate.swift in Sources */,
+				284AC51723F5788E00AB3845 /* SceneDelegate.swift in Sources */,
+				284AC51923F5788E00AB3845 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		284AC52323F5788F00AB3845 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				284AC55123F58DE500AB3845 /* InfoView.swift in Sources */,
+				284AC52C23F5788F00AB3845 /* BusinessCardAppTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		284AC52E23F5788F00AB3845 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				284AC55223F58DE500AB3845 /* InfoView.swift in Sources */,
+				284AC53723F5788F00AB3845 /* BusinessCardAppUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		284AC52923F5788F00AB3845 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 284AC51023F5788E00AB3845 /* BusinessCardApp */;
+			targetProxy = 284AC52823F5788F00AB3845 /* PBXContainerItemProxy */;
+		};
+		284AC53423F5788F00AB3845 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 284AC51023F5788E00AB3845 /* BusinessCardApp */;
+			targetProxy = 284AC53323F5788F00AB3845 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		284AC51F23F5788E00AB3845 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				284AC52023F5788E00AB3845 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		284AC53923F5788F00AB3845 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		284AC53A23F5788F00AB3845 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		284AC53C23F5788F00AB3845 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"BusinessCardApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = BusinessCardApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = any.BusinessCardApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		284AC53D23F5788F00AB3845 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"BusinessCardApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = BusinessCardApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = any.BusinessCardApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		284AC53F23F5788F00AB3845 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = BusinessCardAppTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = any.BusinessCardAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BusinessCardApp.app/BusinessCardApp";
+			};
+			name = Debug;
+		};
+		284AC54023F5788F00AB3845 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = BusinessCardAppTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = any.BusinessCardAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BusinessCardApp.app/BusinessCardApp";
+			};
+			name = Release;
+		};
+		284AC54223F5788F00AB3845 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = BusinessCardAppUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = any.BusinessCardAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BusinessCardApp;
+			};
+			name = Debug;
+		};
+		284AC54323F5788F00AB3845 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = BusinessCardAppUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = any.BusinessCardAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BusinessCardApp;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		284AC50C23F5788E00AB3845 /* Build configuration list for PBXProject "BusinessCardApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				284AC53923F5788F00AB3845 /* Debug */,
+				284AC53A23F5788F00AB3845 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		284AC53B23F5788F00AB3845 /* Build configuration list for PBXNativeTarget "BusinessCardApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				284AC53C23F5788F00AB3845 /* Debug */,
+				284AC53D23F5788F00AB3845 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		284AC53E23F5788F00AB3845 /* Build configuration list for PBXNativeTarget "BusinessCardAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				284AC53F23F5788F00AB3845 /* Debug */,
+				284AC54023F5788F00AB3845 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		284AC54123F5788F00AB3845 /* Build configuration list for PBXNativeTarget "BusinessCardAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				284AC54223F5788F00AB3845 /* Debug */,
+				284AC54323F5788F00AB3845 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 284AC50923F5788E00AB3845 /* Project object */;
+}

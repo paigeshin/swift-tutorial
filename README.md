@@ -1,6 +1,465 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+20.02.14
+
+- Swift UI
+    - Easy Layouts `VHZ Stack` (Vertical, Horizontal, Z-index)
+    - Inspiration came from `WebFramework`
+    - Highly Reusable UI
+    - **Cross Platform User interface (Across iOS cross platform)**
+    - Environment: MacOS Catalina
+    - Only iOS3
+    - **iPhone 6S or later**
+    - **iPad AIR 2 or later**
+    
+    - Objective
+        1. How to start your first SwiftUI Project
+        2. Work with Xcode preview and the object library to generate SwiftUI code
+        3. Learn to use SwiftUI modifies to set properties for components
+        4. Learn how to arrange elements using SwiftUI Stacks
+        5. Learn how to add and size Image components
+
+- I am Rich App
+
+        //
+        //  ContentView.swift
+        //  myApp
+        //
+        //  Created by shin seunghyun on 2020/02/13.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+
+        import SwiftUI
+
+        struct ContentView: View {
+            
+            var body: some View {
+                ZStack {
+                    Color(.systemTeal)
+                        .edgesIgnoringSafeArea(.all)
+                    VStack {
+                        Text("I Am Rich")
+                            .font(.system(size: 40))
+                            .fontWeight(.bold)
+                            .foregroundColor(Color.white)
+                        Image("diamond")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:200, height: 200, alignment: .center)
+                    }
+                    
+                }
+            }
+        }
+
+        struct ContentView_Previews: PreviewProvider {
+            static var previews: some View {
+                ContentView()
+            }
+        }
+        
+- Business Card App
+    - font file을 넣을 때 permission을 준다.
+    - `Create folder references` 로 폴더를 연결해줘야 한다.
+    - Custom Font, Search for `Fonts provided by application`
+    
+            //
+            //  ContentView.swift
+            //  BusinessCardApp
+            //
+            //  Created by shin seunghyun on 2020/02/13.
+            //  Copyright © 2020 shin seunghyun. All rights reserved.
+            //
+
+            import SwiftUI
+
+
+
+            struct ContentView: View {
+                
+
+                
+                var body: some View {
+                    ZStack {
+                        Color(red: 0.10, green: 0.74, blue: 0.52)
+                            .edgesIgnoringSafeArea(.all)
+                        VStack {
+                            
+                            Image("ideal")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 150.0, height: 150.0)
+                                .clipShape(Circle())
+                                .overlay(
+                                    Circle().stroke(Color.white, lineWidth: 5)
+                                )
+                            Text("Shin SeungHyun")
+                                .font(Font.custom("Pacifico-Regular", size: 40))
+                                .bold()
+                                .foregroundColor(.white)
+                            Text("iOS Developer")
+                                .foregroundColor(.white)
+                                .font(.system(size: 25))
+                            Divider()
+                            
+                            //My answer
+            //                Text("+44 123 456 789")
+            //                    .foregroundColor(.black)
+            //                    .font(.largeTitle).bold()
+            //                    .padding(15)
+            //                .background(
+            //                    RoundedRectangle(cornerRadius: 50).foregroundColor(.white)
+            //                )
+                            
+                             
+                            //Instructors Example
+                            
+                            InfoView(text: "+44 123 456 789", imageName: "phone.fill")
+                            InfoView(text: "paige@gmail.com", imageName: "envelope.fill")
+                        
+                        }
+                    }
+                }
+            }
+
+            struct ContentView_Previews: PreviewProvider {
+                static var previews: some View {
+                    ContentView()
+                }
+            }
+            
+- Business Name Card App, Component
+
+        //
+        //  InfoView.swift
+        //  BusinessCardApp
+        //
+        //  Created by shin seunghyun on 2020/02/13.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+
+        import SwiftUI
+
+        struct InfoView: View {
+            
+            let text: String
+            let imageName: String
+            
+            var body: some View {
+                RoundedRectangle(cornerRadius: 25)
+                    .fill(Color.white)
+                    .frame(height: 50)
+                    .overlay(HStack {
+                        Image(systemName: imageName)
+                            .foregroundColor(.green)
+                        Text(text).foregroundColor(.black)
+                    })
+                    .padding(.all)
+            }
+        }
+
+
+        struct InfoView_Previews: PreviewProvider {
+            static var previews: some View {
+                InfoView(text: "+44 123 456 789", imageName: "phone.fill")
+                    .previewLayout(.sizeThatFits)
+            }
+        }
+    
+- Dicee App
+    - State
+    
+            import SwiftUI
+
+            struct ContentView: View {
+                
+                @State var leftDiceNumber: Int = 1
+                @State var rightDiceNumber: Int = 2
+                
+                var body: some View {
+                    ZStack {
+                        Image("background")
+                            .resizable()
+                            .edgesIgnoringSafeArea(.all)
+                        VStack {
+                            Image("diceeLogo")
+                            
+                            Spacer()
+                            
+                            HStack {
+                                DiceView(n: leftDiceNumber)
+                                DiceView(n: rightDiceNumber)
+                            }
+                            .padding(.horizontal)
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                
+                                self.leftDiceNumber = Int.random(in: 1...6)
+                                self.rightDiceNumber = Int.random(in: 1...6)
+                                
+                            }){
+                                Text("Roll")
+                                    .font(.system(size: 50))
+                                    .fontWeight(.heavy)
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal)
+                            }
+                            .background(Color.red)
+                            
+                        }
+                        
+                    }
+                }
+            }
+
+            struct DiceView: View {
+                let n: Int
+                var body: some View {
+                    Image("dice\(n)")
+                        .resizable()
+                        .aspectRatio(1, contentMode: .fit)
+                        .padding()
+                }
+            }
+
+
+            struct ContentView_Previews: PreviewProvider {
+                static var previews: some View {
+                    ContentView()
+                }
+            }
+
+- Hacker News
+    - Identifiable
+    - PostData, ( Data Model )
+    - `@Published`
+    - `@ObservableObject`
+    
+    - Model
+    
+            import Foundation
+
+            struct Results: Decodable {
+                
+                let hits: [Post]
+                
+                
+            }
+
+            struct Post: Decodable, Identifiable {
+                
+                var id: String {
+                    return objectID
+                }
+                let objectID: String
+                let points: Int
+                let title: String
+                let url: String
+                
+            }
+    
+    -> When you use `Identifiable` protocol, you should implement `id`
+    
+    
+    - Observable Pattern
+    
+            import Foundation
+            
+            class NetworkManager: ObservableObject {
+                
+                @Published var posts = [Post]() //PostObject, 생성자.    -   @Published 를 사용하면, 데이터가 바뀔 때마다 detection이 된다.
+                
+                func fetchData(){
+                    if let url = URL(string: "http://hn.algolia.com/api/v1/search?tags=front_page") {
+                        
+                        let session:URLSession = URLSession(configuration: .default)
+                        let task = session.dataTask(with: url) { (data, response, error) in
+                            
+                            if error == nil {
+                                let decoder = JSONDecoder()
+                                if let safeData = data {
+                                    do {
+                                        let results = try decoder.decode(Results.self, from: safeData)
+                                        DispatchQueue.main.async {
+                                            self.posts = results.hits
+                                        }
+                                    } catch {
+                                        print(error)
+                                    }
+                                }
+                            }
+                        }
+                        task.resume()
+                    }
+                }
+            }
+    -> implement Protocol `Observable Object`
+    -> Note that we added `@Published`
+    
+    - Use the data
+    
+            import SwiftUI
+
+            struct ContentView: View {
+                
+                @ObservedObject var networkManager = NetworkManager()
+                
+                var body: some View {
+                    NavigationView {
+                        //List Loop
+                        List(networkManager.posts){ post in
+                            HStack {
+                                Text(String(post.points))
+                                Text(post.title)
+                            }
+                        }
+                        .navigationBarTitle("H4X0R NEWS")
+                    }
+                    .onAppear { // viewDidLoad(), Async
+                        self.networkManager.fetchData()
+                    }
+                }
+            }
+
+            struct ContentView_Previews: PreviewProvider {
+                static var previews: some View {
+                    ContentView()
+                }
+            }
+    
+    -> Here we added `ObservedObjet`
+    
+    - NavigationLink, SwiftUI의 hyperlink 같은 개념이다.
+    
+            import SwiftUI
+            
+            struct ContentView: View {
+                
+                @ObservedObject var networkManager = NetworkManager()
+                
+                var body: some View {
+                    NavigationView {
+                        //List Loop
+                        List(networkManager.posts){ post in
+                            //a tag로 감싸주는 느낌
+                            NavigationLink(destination: DetailView(url: post.url)){
+                                HStack {
+                                    Text(String(post.points))
+                                    Text(post.title)
+                                }
+                            }
+                            
+                        }
+                        .navigationBarTitle("H4X0R NEWS")
+                    }
+                        .onAppear { // viewDidLoad(), Async
+                            self.networkManager.fetchData()
+                    }
+                }
+            }
+            
+            struct ContentView_Previews: PreviewProvider {
+                static var previews: some View {
+                    ContentView()
+                }
+            }
+    
+    - WebView -> SwiftUI에서 Webview를 지원하지 않기때문에 webview를 직접 만들어 줘야한다.
+    
+            //WebView
+            struct WebView : UIViewRepresentable {
+                
+                let urlString: String?
+                
+                func makeUIView(context: Context) -> WebView.UIViewType {
+                    return WKWebView()
+                }
+                func updateUIView(_ uiView: WKWebView, context: UIViewRepresentableContext<WebView>) {
+                    if let safeString = urlString {
+                        if let url = URL(string: safeString) {
+                            let request = URLRequest(url: url)
+                            uiView.load(request)
+                        }
+                        
+                    }
+                }
+            }
+            
+    - DetailView
+    
+            import SwiftUI
+            import WebKit
+
+            struct DetailView: View {
+                
+                let url: String?
+                
+                var body: some View {
+                    Text("Hello, World!")
+                }
+            }
+
+            struct DetailView_Previews: PreviewProvider {
+                static var previews: some View {
+                    DetailView(url: "https://www.google.com")
+                }
+            }
+
+            //WebView
+            struct WebView : UIViewRepresentable {
+                
+                let urlString: String?
+                
+                func makeUIView(context: Context) -> WebView.UIViewType {
+                    return WKWebView()
+                }
+                func updateUIView(_ uiView: WKWebView, context: UIViewRepresentableContext<WebView>) {
+                    if let safeString = urlString {
+                        if let url = URL(string: safeString) {
+                            let request = URLRequest(url: url)
+                            uiView.load(request)
+                        }
+                        
+                    }
+                }
+            }
+            
+    - WebView Component 화
+    
+            //
+            //  WebView.swift
+            //  H4XDR news
+            //
+            //  Created by shin seunghyun on 2020/02/14.
+            //  Copyright © 2020 shin seunghyun. All rights reserved.
+            //
+
+            import Foundation
+            import WebKit
+            import SwiftUI
+
+            //WebView
+            struct WebView : UIViewRepresentable {
+                
+                let urlString: String?
+                
+                func makeUIView(context: Context) -> WKWebView {
+                    return WKWebView()
+                }
+                func updateUIView(_ uiView: WKWebView, context: Context) {
+                    if let safeString = urlString {
+                        if let url = URL(string: safeString) {
+                            let request = URLRequest(url: url)
+                            uiView.load(request)
+                        }
+                        
+                    }
+                }
+            }
+
 20.02.13
 
 - Custoizing Cells in TableView using a .xib File (Android itemview)
