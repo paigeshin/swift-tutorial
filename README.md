@@ -186,8 +186,8 @@
 - Encoding data with NSCoder (for only single table)
     - path 설정 및 initialization. -> 어디다 저장할지 정하는 것
 
-        
-        let dataFilePath = FileManager.default.urls(for: .documentDirectory, in:.userDomainMask).first?.appendingPathComponent("Items.plist")
+            
+            let dataFilePath = FileManager.default.urls(for: .documentDirectory, in:.userDomainMask).first?.appendingPathComponent("Items.plist")
 
 
     - 데이터 저장
@@ -207,26 +207,26 @@
 
     - 데이터 불러오기
 
-        func loadItems() {
-            if let data = try? Data(contentsOf: dataFilePath!){
-                do {
-                    let decoder = PropertyListDecoder()
-                    itemArray = try decoder.decode([Item].self, from: data)
-                } catch {
-                    print("Error decoding item array")
+            func loadItems() {
+                if let data = try? Data(contentsOf: dataFilePath!){
+                    do {
+                        let decoder = PropertyListDecoder()
+                        itemArray = try decoder.decode([Item].self, from: data)
+                    } catch {
+                        print("Error decoding item array")
+                    }
                 }
             }
-        }
 
 
     - model에 반드시 codable 또는 encodable, decodable protocol 적용
 
-        import Foundation
+            import Foundation
 
-        struct Item: Codable {
-            var title: String = ""
-            var done: Bool = false
-        }
+            struct Item: Codable {
+                var title: String = ""
+                var done: Bool = false
+            }
 
 - iOS daabase
     - UserDefaults: Quickly persist small bits of data : top score, player nickname, music on/off
@@ -367,15 +367,15 @@
 - Lazy Keyword
     - lazy keyword를 달면, 해당 로직을 사용할 때만 메모리를 차지하게 한다.
 
-        lazy var persistentContainer: NSPersistentContainer = {
-            let container = NSPersistentContainer(name: "DataModel")
-            container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-                if let error = error as NSError? {
-                    fatalError("Unresolved error \(error), \(error.userInfo)")
-                }
-            })
-            return container
-        }()
+            lazy var persistentContainer: NSPersistentContainer = {
+                let container = NSPersistentContainer(name: "DataModel")
+                container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+                    if let error = error as NSError? {
+                        fatalError("Unresolved error \(error), \(error.userInfo)")
+                    }
+                })
+                return container
+            }()
 
 - initialize
 
