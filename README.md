@@ -1,6 +1,500 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+20.02.16 - Swift Data Persistence - todolist app
+
+- Basic Setting
+
+        import UIKit
+
+        class ViewController: UITableViewController {
+            
+            //Hard Coded items
+            let itemArray: [String] = ["Find Mike", "Buy Eggos", "Destroy Demogorgon"]
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                
+                
+            }
+            
+            //MARK - tableview datasource methods
+            override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                return itemArray.count
+            }
+            
+            override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+                cell.textLabel?.text = itemArray[indexPath.row] //굳이 custom itemCell을 만들지 않아도 기본적으로 테스트 하느 정도는 이렇게 넣을 수 있다.
+                return cell
+            }
+            
+        }
+
+- TableView Delegate Method added
+
+        //
+        //  ViewController.swift
+        //  Todoey
+        //
+        //  Created by Philipp Muellauer on 02/12/2019.
+        //  Copyright © 2019 App Brewery. All rights reserved.
+        //
+
+        import UIKit
+
+        class ViewController: UITableViewController {
+            
+            //Hard Coded items
+            let itemArray: [String] = ["Find Mike", "Buy Eggos", "Destroy Demogorgon"]
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                
+                
+            }
+            
+            //MARK - tableview datasource methods
+            override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                return itemArray.count
+            }
+            
+            override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+                cell.textLabel?.text = itemArray[indexPath.row]
+                return cell
+            }
+
+            //유저가 선택할 때마다 특정 로직을 넣을 수 있음
+            override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+                print(itemArray[indexPath.row])
+                tableView.deselectRow(at: indexPath, animated: true)
+                
+            }
+            
+            
+        }
+
+- TableCell Accessory Control
+
+        //유저가 선택할 때마다 특정 로직을 넣을 수 있음
+        override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            
+            if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+                tableView.cellForRow(at: indexPath)?.accessoryType = .none
+            } else {
+                tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+            }
+            
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+
+- Alert Dialog
+
+        @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+            
+            var textField: UITextField = UITextField()
+            
+            let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+                //What will happen once the user clicks the Add Item button on our UIAlert
+                if let newItem: String = textField.text {
+                    self.itemArray.append(newItem)
+                    self.tableView.reloadData()
+                }
+            }
+            //dialog에 textfield 추가
+            alert.addTextField { (alertTextField) in
+                alertTextField.placeholder = "Create new item"
+                textField = alertTextField
+            }
+            alert.addAction(action)
+            present(alert, animated: true, completion: nil)
+            
+        }
+
+- Check if data is stored (using NSencoding)
+
+        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                // Override point for customization after application launch.
+                
+                print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true))
+                
+                return true
+        }
+        
+- store and load date using `UserDefaults`
+
+        //Field
+        let defaults: UserDefaults = UserDefaults.standard
+
+        //Save the data
+        defaults.set(dataYouWantToStore, forKey: "TodoListArray")
+
+        //Load the data
+        if let items = defaults.array(forKey: "TodoListArray") as? [String]{
+               itemArray = items
+        }
+
+- UserDefaults Explaiend
+    - It can use only for `standard` datatype
+    - `userDefaults` are not that efficient
+    - Use `userDefaults` for a small trick like audio `volume up` or `volum down`
+    - 굳이 덧붙이자면 sharedpreferences와 비슷
+    
+            import UIKit
+
+            let defaults = UserDefaults.standard
+
+            defaults.set(0.24, forKey: "Volume")
+            defaults.set(true, forKey: "MusicOn")
+            defaults.set("Angela", forKey: "PlayerName")
+            defaults.set(Date(), forKey: "AppLastOpenedByUser")
+
+            let array = [1, 2, 3]
+            defaults.set(array, forKey: "myArray")
+            let dictionary = ["name": "Angela"]
+            defauls.set(dictionary, forKey: "myDictionary")
+
+
+            let volume = defaults.float(forKey: "Volume")
+            let appLastOpen = defaults.object(forKey: "AppLastOpenedByUser")
+            let myArray = defaults.array(forKey: "myArray")
+            let myDictionary = defaults.dictionary(forKey: "myDictionary")
+
+- Swift Singleton
+    - 보통 built-in object 중 `defaults`라는 키워드를 달고 있으면 singleton임
+    
+            class Car {
+                var color = "Red"
+                
+                static let singletonCar = Car()
+            }
+
+            class A {
+                init(){
+                    Car.singletonCar.color = "Brown"
+                }
+            }
+
+            class B {
+                init(){
+                    print(Car.singletonCar.color)
+                }
+            }
+
+- Encoding data with NSCoder (for only single table)
+    - path 설정 및 initialization. -> 어디다 저장할지 정하는 것
+
+        
+        let dataFilePath = FileManager.default.urls(for: .documentDirectory, in:.userDomainMask).first?.appendingPathComponent("Items.plist")
+
+
+    - 데이터 저장
+
+
+            func saveItems(){
+                let encoder = PropertyListEncoder()
+                do {
+                    let data = try encoder.encode(self.itemArray)
+                    try data.write(to: self.dataFilePath!)
+                } catch {
+                    print("Error encoding item array, \(error)")
+                }
+                
+                self.tableView.reloadData()
+            }
+
+    - 데이터 불러오기
+
+        func loadItems() {
+            if let data = try? Data(contentsOf: dataFilePath!){
+                do {
+                    let decoder = PropertyListDecoder()
+                    itemArray = try decoder.decode([Item].self, from: data)
+                } catch {
+                    print("Error decoding item array")
+                }
+            }
+        }
+
+
+    - model에 반드시 codable 또는 encodable, decodable protocol 적용
+
+        import Foundation
+
+        struct Item: Codable {
+            var title: String = ""
+            var done: Bool = false
+        }
+
+- iOS daabase
+    - UserDefaults: Quickly persist small bits of data : top score, player nickname, music on/off
+    - Codable: Flash freeze custom objects
+    - KeyChain: Save small bits of data securely
+    - SQLite: Persist large amounts of data and query it
+    - Core Data: Object-oriented databse
+    - Realm: A faster and easier databse solution
+
+
+- Core data
+    - 처음에 app을 만들 때 coredata를 설정해서 프로젝트를 시작
+
+                //
+            //  AppDelegate.swift
+            //  CoreDataTest
+            //
+            //  Created by shin seunghyun on 2020/02/16.
+            //  Copyright © 2020 shin seunghyun. All rights reserved.
+            //
+
+            import UIKit
+            import CoreData
+
+            @UIApplicationMain
+            class AppDelegate: UIResponder, UIApplicationDelegate {
+
+
+
+                func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                    // Override point for customization after application launch.
+                    return true
+                }
+
+                // MARK: UISceneSession Lifecycle
+
+                func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+                    // Called when a new scene session is being created.
+                    // Use this method to select a configuration to create the new scene with.
+                    return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+                }
+
+                func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+                    // Called when the user discards a scene session.
+                    // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+                    // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+                }
+
+                // MARK: - Core Data stack
+
+                lazy var persistentContainer: NSPersistentContainer = {
+                    /*
+                     The persistent container for the application. This implementation
+                     creates and returns a container, having loaded the store for the
+                     application to it. This property is optional since there are legitimate
+                     error conditions that could cause the creation of the store to fail.
+                    */
+                    let container = NSPersistentContainer(name: "CoreDataTest")
+                    container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+                        if let error = error as NSError? {
+                            // Replace this implementation with code to handle the error appropriately.
+                            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                             
+                            /*
+                             Typical reasons for an error here include:
+                             * The parent directory does not exist, cannot be created, or disallows writing.
+                             * The persistent store is not accessible, due to permissions or data protection when the device is locked.
+                             * The device is out of space.
+                             * The store could not be migrated to the current model version.
+                             Check the error message to determine what the actual problem was.
+                             */
+                            fatalError("Unresolved error \(error), \(error.userInfo)")
+                        }
+                    })
+                    return container
+                }()
+
+                // MARK: - Core Data Saving support
+
+                func saveContext () {
+                    let context = persistentContainer.viewContext
+                    if context.hasChanges {
+                        do {
+                            try context.save()
+                        } catch {
+                            // Replace this implementation with code to handle the error appropriately.
+                            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                            let nserror = error as NSError
+                            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                        }
+                    }
+                }
+
+            }
+
+
+- Name Matching with CoreData File Name
+
+                lazy var persistentContainer: NSPersistentContainer = {
+                /*
+                 The persistent container for the application. This implementation
+                 creates and returns a container, having loaded the store for the
+                 application to it. This property is optional since there are legitimate
+                 error conditions that could cause the creation of the store to fail.
+                */
+                let container = NSPersistentContainer(name: "DataModel") //`****이부분 반드시 core data file name과 같아야 한다`
+                container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+                    if let error = error as NSError? {
+                        // Replace this implementation with code to handle the error appropriately.
+                        // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                         
+                        /*
+                         Typical reasons for an error here include:
+                         * The parent directory does not exist, cannot be created, or disallows writing.
+                         * The persistent store is not accessible, due to permissions or data protection when the device is locked.
+                         * The device is out of space.
+                         * The store could not be migrated to the current model version.
+                         Check the error message to determine what the actual problem was.
+                         */
+                        fatalError("Unresolved error \(error), \(error.userInfo)")
+                    }
+                })
+                return container
+            }()
+
+
+- Core data 기본 설정
+    - code gen : Class Definition
+    - 보통 개발자들이 추가적인 코드를 작성하고 싶을 때, category/extension으로 설정해두기도 한다
+
+    - AppDelegate file에 반드시 이 코드를 추가해주어야함.
+
+        func applicationWillTerminate(_ application: UIApplication) {
+            self.saveContext()
+        }
+
+
+- Lazy Keyword
+    - lazy keyword를 달면, 해당 로직을 사용할 때만 메모리를 차지하게 한다.
+
+        lazy var persistentContainer: NSPersistentContainer = {
+            let container = NSPersistentContainer(name: "DataModel")
+            container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+                if let error = error as NSError? {
+                    fatalError("Unresolved error \(error), \(error.userInfo)")
+                }
+            })
+            return container
+        }()
+
+- initialize
+
+        let context = 
+        (UIApplication.shared.delegate as! AppDelegate)
+        .persistentContainer
+        .viewContext
+
+- write & update
+
+        func saveItems(){
+        
+            do {
+                try context.save()
+            } catch {
+                
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                
+            }
+            
+            self.tableView.reloadData()
+        }
+
+- read
+
+
+             func loadItems() {
+                    let request: NSFetchRequest<Item> = Item.fetchRequest()
+                    do {
+                        itemArray = try context.fetch(request)
+                    } catch {
+                        print("Error fetching data from context \(error)")
+                    }
+                }
+
+- delete
+        
+        override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+            context.delete(itemArray[indexPath.row])
+            itemArray.remove(at: indexPath.row)
+
+            saveItems()
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+
+
+- searchbar handling
+
+                //MARK: - Search bar Methods
+        extension ViewController: UISearchBarDelegate{
+            
+            func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+                //Set up the query
+                let request : NSFetchRequest<Item> = Item.fetchRequest()
+                let predicate = NSPredicate(format: "title CONTAINS %@", searchBar.text!)
+                request.predicate = predicate
+                
+                //Sort Data
+                let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+                request.sortDescriptors = [sortDescriptor]
+                
+                //Set the item
+                do {
+                    itemArray = try context.fetch(request)
+                } catch {
+                    print("Error fetching data from context \(error)")
+                }
+                
+                tableView.reloadData()
+            }
+            
+        }
+
+- parameter에 값이 없을 때 default value 넣는 방법
+
+        func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context \(error)")
+        }
+        tableView.reloadData()
+        }
+
+- go back to original state (when using searchbar)
+
+
+        //MARK: - Search bar Methods
+        extension ViewController: UISearchBarDelegate{
+            
+            func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+                //Set up the query
+                let request : NSFetchRequest<Item> = Item.fetchRequest()
+                request.predicate = NSPredicate(format: "title CONTAINS %@", searchBar.text!)
+                
+                //Sort Data
+                request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+                
+                //Set the item
+                loadItems(with: request)
+                
+            }
+            
+            func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+                if searchBar.text?.count == 0 {
+                    loadItems()
+                    
+                    DispatchQueue.main.async {
+                        searchBar.resignFirstResponder() //다시 처음 상태로 돌아감
+                    }
+                    
+                }
+            }
+            
+        }
+
+
 20.02.14
 
 - Swift UI
