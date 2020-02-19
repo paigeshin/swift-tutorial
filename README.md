@@ -1,6 +1,381 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+2020.02.19 - Realm 공부 완료
+
+        ### 🔵 Realm Installation
+
+- podFile
+
+        # Uncomment the next line to define a global platform for your project
+        platform :ios, '9.0'
+        
+        target 'Todoey' do
+          # Comment the next line if you don't want to use dynamic frameworks
+          use_frameworks!
+        
+          # Pods for Todoey
+          pod 'RealmSwift'
+        
+        end
+
+- AppDelegate
+
+        //
+        //  AppDelegate.swift
+        //  Todoey
+        //
+        //  Created by Angela Yu on 16/11/2017.
+        //  Copyright © 2017 Angela Yu. All rights reserved.
+        //
+        
+        import UIKit
+        import CoreData
+        import RealmSwift
+        
+        @UIApplicationMain
+        class AppDelegate: UIResponder, UIApplicationDelegate {
+            
+            var window: UIWindow?
+            
+            
+            func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                
+                do {
+                    let realm = try Realm()
+                } catch {
+                    print("Error initialising new realm, \(error)")
+                }
+                return true
+            }
+            
+        
+        }
+
+- `dynamic` keyword
+
+⇒ Dynamic is what's called as `declaration modifier`.
+
+⇒ It happens while compiling, which allows the data to be changed dynamically on Runtime Environment
+
+⇒ It came from Objective-C
+
+- Realm Root Check
+
+⇒ `Realm.Configuration.defaultConfiguration.fileURL`
+
+- 곧바로 file URL로 가는 방법
+
+⇒ MAC OS 기준, finder에서   `command` + `shift` + `g`
+
+### 🔵Swift Error Handling
+
+- Swift `try` is the most basic way of dealing with functions that can throw errors
+- `try?` is used to handle errors by converting the error into an optional value. **This way if an error occurs, the function would return a nil** and we know Optionals can be nil in Swift. Hence for `try?` you can get rid of `do-catch` block
+- `**try!` is used to assert that the error won't occur.** Should be only used when you're absolutely sure that the function won't throw an error. Like `try?` , `try!` works without a do-catch block.
+
+### 🔵 Define DataModel and Relationship
+
+- Realm Model, Parent - Category
+
+        //
+        //  Category.swift
+        //  Todoey
+        //
+        //  Created by shin seunghyun on 2020/02/18.
+        //  Copyright © 2020 Angela Yu. All rights reserved.
+        //
+        
+        import Foundation
+        import RealmSwift
+        
+        class Category: Object {
+            @objc dynamic var name: String = ""
+            
+            //Relationship - Inside of the each Category, it contains items, `One to Many` => Forward Relationship
+            let items: List<Item> = List<Item>()
+        }
+
+⇒ One to Many `let items: List<Item> = List<Item>()`
+
+    - Realm Model, Children - Item
+
+        //
+        //  Item.swift
+        //  Todoey
+        //
+        //  Created by shin seunghyun on 2020/02/18.
+        //  Copyright © 2020 Angela Yu. All rights reserved.
+        //
+        
+        import Foundation
+        import RealmSwift
+        
+        class Item: Object {
+            @objc dynamic var title: String = ""
+            @objc dynamic var done: Bool = false
+                @objc dynamic var dateCreated: Date?
+            
+            //Relationship - Inverse Relationship of Items, one to one => Inverse Relationship
+            var parentCategory: LinkingObjects = LinkingObjects(fromType: Category.self, property: "items")
+            
+        }
+
+⇒ one to one `var parentCategory: LinkingObjects = LinkingObjects(fromType: Category.self, property: "Items")`
+
+### 🔵 Initialize Realm
+
+    let realm = try! Realm()
+
+### 🔵 Create (Write)
+
+    do {
+        try realm.write {
+            realm.add(data)
+        } catch {
+            print("Error saving category \(error)")
+        } 
+    }
+
+### 🔵 Read
+
+- Data to be loaded ⇒ Define it with `Results<?>` which is provided by Realm. It's basically an array
+
+    var categories: Results<Category>?
+
+⇒ Results<Category> 값이 없을 수도 있기 때문에  optional `?` 을 넣어준다.
+
+⇒ 참고로 `Results<?>` 로 값을 지정해주면 `array.append()` 를 호출하지 않아도 된다. 데이터를 write 하면 자동으로 ui에 표시된다.
+
+- get data
+
+        categories = realm.objects(Category.self)
+
+- get data with query
+
+        todoItemArray = 
+        selectedTodoParent?
+        .items
+        .sorted(byKeyPath: "title", ascending: true)
+
+        LinkingObjects(fromType: ?, property: "?")
+        .items
+
+        .sorted(byKeyPath: "?", ascending: true )
+
+❗️Realm을 사용하면 굳이 ui에 logic을 작성하지 않아도 데이터가 바뀐대로 ui에 적용된다.
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+            if let todoItem = todoItemArray?[indexPath.row] {
+                cell.textLabel?.text = todoItem.title
+                cell.accessoryType = todoItem.done ? .checkmark : .none
+            } 
+            return cell
+        }
+
+### 🔵 Update - `realm.write { }`
+
+    do {
+        try realm.write {
+            todoItem.done = !todoItem.done
+        } 
+    } catch {
+        print("Error saving done status, \(error)")
+    }
+
+### 🔵 Delete = `realm.write { realm.delete(data) }`
+
+### 🔵 NSPredicate Examples
+
+    NSCompoundPredicate(
+        type: .and,
+        subpredicates: [
+            NSPredicate(format: "age > 25"),
+            NSPredicate(format: "firstName = %@", "Quentin")
+        ]   
+    )
+    
+    NSPredicate(format: "(age > 25) AND (firstName = %@)", "Quentin")
+
+### 🔵 Querying Data Using Realm
+
+    //NSPredicate
+    todoItemArray =
+        todoItemArray?
+            .filter("title CONTAINS[cd] %@", searchBar.text)
+            .sorted(byKeyPath: "dateCreated", ascending: true)
+    
+    tableView.reloadData()
+
+### 🔵 Error Handling
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/69ab0326-bea4-4233-b15f-fe75c51cfc6f/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/69ab0326-bea4-4233-b15f-fe75c51cfc6f/Untitled.png)
+
+⇒ 이전에 데이터들을 업데이트하거나 다 지워준다. 
+
+---
+
+### 🔵 Making Our Cells Swipable
+
+- frontend part
+
+### 🔵 Get the library
+
+- cocoaPod
+
+            # Uncomment the next line to define a global platform for your project
+            platform :ios, '9.0'
+            
+            target 'Todoey' do
+              # Comment the next line if you don't want to use dynamic frameworks
+              use_frameworks!
+            
+              # Pods for Todoey
+              `pod 'RealmSwift'`
+              `pod 'SwipeCellKit'`    
+            
+            end
+
+- import
+
+        import SwipeCellKit
+
+- cast cell as `SwipeCellKit`
+
+        override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
+            cell.textLabel?.text = todoParents?[indexPath.row].name ?? "No Categories added"
+            cell.delegate = self
+            return cell
+        }
+
+- implement `protocol` and related `methods`
+
+        //Mark: - Swipe Cell Delegate Methods
+        
+        extension CategoryViewController: SwipeTableViewCellDelegate {
+            
+            func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+                
+                guard orientation == .right else { return nil}
+                
+                let deleteAction = SwipeAction(style: .destructive, title: "Delete") { (SwipeAction, IndexPath) in
+                    // Handle action by updating model with deletion
+                    print("Item deleted")
+                }
+                
+                // customize the action appearance
+                deleteAction.image = UIImage(named: "delete-icon")
+                
+                return [deleteAction]
+            }
+            
+        }
+
+- Connect `tableCell` to `SwipeTableCell` as well as with modules
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6b8fa87a-d7ad-431e-a92c-08276216e9b7/Screen_Shot_2020-02-19_at_14.52.04.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6b8fa87a-d7ad-431e-a92c-08276216e9b7/Screen_Shot_2020-02-19_at_14.52.04.png)
+
+### 🔵 Deletion Handling
+
+    let deleteAction = SwipeAction(style: .destructive, title: "Delete") { (swipeAction, indexPath) in
+                // Handle action by updating model with deletion
+                
+                if let categoryForDeletion = self.todoParents?[indexPath.row]{
+                    do {
+                        try self.realm.write {
+                            self.realm.delete(categoryForDeletion)
+                        }
+                    } catch {
+                        print("Error deleting Item: \(error)")
+                    }
+                    tableView.reloadData()
+                }
+            }
+
+### 🔵 Expansion
+
+    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
+            var options = SwipeOptions()
+            options.expansionStyle = .destructive //remove
+            return options
+    }
+
+⇒ Expansion Animation 추가
+
+### 🔵 Inheritance
+
+- TableView Datasource Methods, SwipeTableViewController
+
+        //TableView Datasource Methods
+        override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
+            cell.delegate = self
+            return cell
+        }
+
+- Method which returns Cell, CategoryTableViewController
+
+        override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = super.tableView(tableView, cellForRowAt: indexPath) //SwipeTableViewController에서 알아서 SwipeTableViewCell로 각각의 cell들을 casting 해준다.
+            cell.textLabel?.text = todoParents?[indexPath.row].name ?? "No Categories Added Yet"
+            return cell
+        }
+
+### 🔵 Cameleon Color Framework ⇒ Color Library
+
+    cell.backgroundColor = UIColor.randomFlat()
+    
+
+### ❗️ DB 에 내용 추가해서 에러날 때,
+
+- 앱을 삭제하고 재설치한다.
+
+### 🔵 Gradient Effect
+
+- What we want : Progressively darker and darker
+
+        if let color = FlatSkyBlue().darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItemArray!.count)) {
+              cell.backgroundColor = color
+              cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+        }
+
+⇒ in `tableView()` 
+
+- FlatSkyBlue() , darken() 등, ChameleonFramework 에서 기본적으로 제공하는 함수
+- `ContrastColorOf` 를 사용하면 자동으로 contrast를 고려하여 색이 바뀜
+
+        if let color = UIColor(hexString: self.selectedColor!)!.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItemArray!.count)) {
+              cell.backgroundColor = color
+              cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+        }
+
+⇒ 기본적인 `UIColor` 에서 사용 가능
+
+### 🔵 Large Text Navigation Bar
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/341eb82b-27c8-4e6f-956d-a4da8d725533/Screen_Shot_2020-02-19_at_18.04.54.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/341eb82b-27c8-4e6f-956d-a4da8d725533/Screen_Shot_2020-02-19_at_18.04.54.png)
+
+### 🔵 Control `NavigationController` programatically
+
+    override func viewWillAppear(_ animated: Bool) {
+            if let colorHex = selectedColor {
+                title = selecetedTodoParent!.name
+                guard let navBar = navigationController?.navigationBar else { fatalError("Navigation Controller does not exist.") }
+                if let navBarColor = UIColor(hexString: colorHex){
+                    navBar.backgroundColor = navBarColor
+                    navBar.barTintColor = navBarColor
+                    navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+                    navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: ContrastColorOf(navBarColor, returnFlat: true)]
+                }
+            }
+        }
+
+        
+
+2020.02.16
+
 20.02.16 - Swift Data Persistence - todolist app
 
 - Basic Setting
