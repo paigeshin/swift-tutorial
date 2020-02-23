@@ -1,6 +1,333 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+2020.02.23
+
+- layout practice
+- tableView
+
+        //
+        //  ViewController.swift
+        //  TableViewPractice
+        //
+        //  Created by shin seunghyun on 2020/02/23.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+
+        import UIKit
+
+        class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+            
+            @IBOutlet weak var tableView: UITableView!
+            
+            let images = ["image1.jpg", "image2.jpg", "image3.jpg"]
+            
+            func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                return 3
+            }
+            
+            func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RowCell", for: indexPath) as! rowDTO
+                cell.rowLabel.text = "Test"
+                cell.rowImage.image = UIImage(named: images[indexPath.row])
+                return cell
+            }
+
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                tableView.delegate = self
+                tableView.dataSource = self
+                tableView.rowHeight = UITableView.automaticDimension
+                tableView.estimatedRowHeight = 10 //최소값
+            }
+
+        }
+
+        /* TableViewCell에 아래 class를 binding 한다. */
+        class rowDTO: UITableViewCell {
+            
+            @IBOutlet weak var rowImage: UIImageView!
+            @IBOutlet weak var rowLabel: UILabel!
+            
+        }
+
+- collectionView
+
+        //
+        //  ViewController.swift
+        //  CollectionViewSimplifiedVersion
+        //
+        //  Created by shin seunghyun on 2020/02/23.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+
+        import UIKit
+
+        class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+
+            let items = [ #imageLiteral(resourceName: "background") , #imageLiteral(resourceName: "image7") , #imageLiteral(resourceName: "background2") , #imageLiteral(resourceName: "13450078_290367081302103_5382854634955251492_n") , #imageLiteral(resourceName: "image1") ]
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                
+                
+                // Do any additional setup after loading the view.
+            }
+
+            func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+                return items.count
+            }
+            
+            func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! MyCollectionCell
+                cell.myImage.image = items[indexPath.row]
+                return cell
+            }
+            
+            func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+                print(indexPath.item)
+            }
+            
+            func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+                
+                let width = collectionView.frame.width / 3
+                
+                return CGSize(width: width, height: width)
+            }
+            
+            func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+                return 0
+            }
+            
+            func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+                //칼럼간의 간격
+                return 0
+            }
+
+        }  
+
+- 카카오톡 프로파일 메시지
+
+
+        //
+        //  ViewController.swift
+        //  AdvancedTableView
+        //
+        //  Created by shin seunghyun on 2020/02/23.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+
+        import UIKit
+
+        class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
+            var Users = [UserDTO]();
+            @IBOutlet weak var tableView: UITableView!
+           
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                
+                tableView.rowHeight = 80
+            
+                // Do any additional setup after loading the view.
+                Users.append(UserDTO(imageString: "image1.jpg", name: "신승현", message: "성공하고 싶다"))
+                Users.append(UserDTO(imageString: "image2.jpg", name: "김승현", message: "성공하고 싶다2"))
+                Users.append(UserDTO(imageString: "image5.jpg", name: "이승현", message: "성공하고 싶다3"))
+            }
+            
+            func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                return 3
+            }
+            
+            func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RowCell", for: indexPath) as! CustomCell
+                
+                //원그림 주기
+                cell.profileImage.image = UIImage(named: Users[indexPath.row].imageString)
+                cell.profileImage.layer.cornerRadius = (cell.profileImage.frame.width) / 2
+                cell.profileImage.layer.masksToBounds = true
+                
+                cell.profileName.text = Users[indexPath.row].name
+                cell.profileMessage.text = Users[indexPath.row].message
+                
+                //Bubble Speech => 늦게 만든 버블을 프로그래밍 적으로 위치를 지정함, bubbleSpeech를 profileMessage에 넣어준다. 상태메시지창.
+                cell.bubbleSpeech.translatesAutoresizingMaskIntoConstraints = false
+                cell.bubbleSpeech.leftAnchor.constraint(equalTo: cell.profileMessage.leftAnchor, constant: -10).isActive = true
+                cell.bubbleSpeech.topAnchor.constraint(equalTo: cell.profileMessage.topAnchor, constant: -10).isActive = true
+                cell.bubbleSpeech.rightAnchor.constraint(equalTo: cell.profileMessage.rightAnchor, constant: 10).isActive = true
+                cell.bubbleSpeech.bottomAnchor.constraint(equalTo: cell.profileMessage.bottomAnchor, constant: 10).isActive = true
+                cell.bubbleSpeech.layer.cornerRadius = 10
+                cell.bubbleSpeech.layer.masksToBounds = true
+                
+                return cell
+            }
+
+
+        }
+
+        class CustomCell: UITableViewCell {
+            
+            @IBOutlet weak var profileImage: UIImageView!
+            @IBOutlet weak var profileName: UILabel!
+            @IBOutlet weak var profileMessage: UILabel!
+            @IBOutlet weak var bubbleSpeech: UIView!
+            
+        }
+
+
+### 🔵 Subjects to be covered, Swift Advanced
+
+- Swift Structures
+- Structures vs Classes
+- Internal/External Parameters
+- Access Levels
+- Tuples
+
+        //
+        //  ViewController.swift
+        //  Calculator
+        //
+        //  Created by Angela Yu on 10/09/2019.
+        //  Copyright © 2019 London App Brewery. All rights reserved.
+        //
+
+        import UIKit
+
+        class ViewController: UIViewController {
+            
+            @IBOutlet weak var displayLabel: UILabel!
+            
+            var isFinishedTypingNumber: Bool = true
+            
+            @IBAction func calcButtonPressed(_ sender: UIButton) {
+                
+                //What should happen when a non-number button is pressed
+                isFinishedTypingNumber = false
+                
+            }
+            
+            
+            @IBAction func numButtonPressed(_ sender: UIButton) {
+                
+                //What should happen when a number is entered into the keypad
+                if let numValue: String = sender.currentTitle {
+                    
+                    if isFinishedTypingNumber {
+                        displayLabel.text = numValue
+                        isFinishedTypingNumber = false
+                    } else {
+                        displayLabel.text = displayLabel.text! + numValue
+                    }
+                    
+                }
+                
+            }
+            
+        }
+
+### 🔵 Access Modifier
+
+- `private`
+- `fileprivate`
+- `internal`  (default) ⇒ access all the file, all the other properties
+- `public` ⇒ Access is granted for other modules
+- `open`  ⇒ Everyone can access to it, Anybody can do anything they want.
+
+    → ex) override
+
+    → 보통 `blue` 의 색깔 파일.
+- `private` ⇒ 같은 class 내에서만 사용이 가능하다
+- `fileprivate` ⇒ 같은 file 내에서만 사용이 가능하다
+- `internal` ⇒ project 내부에서 공유 가능
+
+
+### 🔵 Advanced Swift Optionals
+
+- guard ⇒ Instead of using `forced unwrapping` , use guard
+
+    //Forcing unwrapping isn't always the best method
+    guard let number = Double(displayLabel.text!) else {
+        fatalError("Cannot convert display label text to a Double")
+    }
+
+**❗️Converting Value**
+
+⇒ String to Double : it becomes `Optional Double`
+
+⇒ Double to String : it becomes `Non-Optional String`
+
+- Dealing with decimal
+
+- `ceil()`
+
+⇒ 소수점 아래의 숫자가 있으면 소수점 아래를 다 버리고 정수부에 1을 더해주는 함수입니다.
+
+- `floor()` → Double
+
+⇒ floor() 함수는 소수점 아래를 그냥 버린다
+
+- `round()`
+
+⇒ round() 반올림
+
+### 🔵 Struct vs Class
+
+- Struct (Value Type)
+- Class (Reference Type)
+
+❗️Use struct as much as possible 
+
+❗️Struct is more predictable  
+
+- 모두 똑같은 object를 reference 하고 있는 것에 대한 예
+
+        //
+        //  main.swift
+        //  Struct vs Class
+        //
+        //  Created by shin seunghyun on 2020/02/23.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+        
+        import Foundation
+        
+        var hero: ClassHero = ClassHero(name: "Iron Man", universe: "Marvel")
+        
+        var anotherMarvelHero = hero
+        anotherMarvelHero.name = "The Hulk"
+        
+        var avengers = [hero, anotherMarvelHero]
+        
+        avengers[0].name = "Thor"
+        
+        print("Hero name = \(hero.name)")
+        print("anotherMarvelHero name = \(anotherMarvelHero.name)")
+        print("first avenger name = \(avengers[0].name)")
+
+- struct에서 `init()` 대신 `let` 을 사용하여 constructor를 만들었다면 값을 변환할 수 없다.
+
+        var hero: StructHero = StructHero(name: "Iron Man", universe: "Marvel")
+        
+        hero.name = "Hulk" //Throwing Error
+
+- Whenever you want to change the property, you need to put the keyword `mutating`
+
+        import Foundation
+        
+        struct StructHero {
+            
+            let name: String
+            let universe: String
+            
+            
+            mutating func reverseName() -> String {
+                return String(self.name.reversed())
+            }
+            
+        }
+
+
 2020.02.19 - Realm 공부 완료
 
         ### 🔵 Realm Installation

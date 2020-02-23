@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="GermanFlag" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DZf-Gz-FUf"/>
+                        <viewControllerLayoutGuide type="bottom" id="cq1-IP-k6q"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kjO-iS-M0h" userLabel="top">
+                                <rect key="frame" x="0.0" y="9" width="414" height="295.66666666666669"/>
+                                <color key="backgroundColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="20W-I9-SWx" userLabel="middle">
+                                <rect key="frame" x="0.0" y="303.33333333333326" width="414" height="295.66666666666674"/>
+                                <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WaH-qN-RWY" userLabel="bottom">
+                                <rect key="frame" x="0.0" y="599" width="414" height="295.66666666666674"/>
+                                <color key="backgroundColor" systemColor="systemYellowColor" red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="20W-I9-SWx" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.33" id="0A8-rB-M8G"/>
+                            <constraint firstItem="20W-I9-SWx" firstAttribute="top" secondItem="kjO-iS-M0h" secondAttribute="bottom" constant="-1.5" id="5Kk-Ew-3x6"/>
+                            <constraint firstItem="WaH-qN-RWY" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="KXq-7e-qvx"/>
+                            <constraint firstItem="WaH-qN-RWY" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="L3d-49-37j"/>
+                            <constraint firstItem="WaH-qN-RWY" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.33" id="M3j-af-g30"/>
+                            <constraint firstItem="20W-I9-SWx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ai4-WZ-Vo0"/>
+                            <constraint firstItem="WaH-qN-RWY" firstAttribute="top" secondItem="20W-I9-SWx" secondAttribute="bottom" id="erb-l2-OCg"/>
+                            <constraint firstItem="kjO-iS-M0h" firstAttribute="top" secondItem="DZf-Gz-FUf" secondAttribute="bottom" constant="-35" id="rHW-a7-fhh"/>
+                            <constraint firstItem="kjO-iS-M0h" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="tvx-wD-wyx"/>
+                            <constraint firstItem="20W-I9-SWx" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="xQM-rG-UDG"/>
+                            <constraint firstItem="kjO-iS-M0h" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" priority="250" id="z6Y-r3-3Iu"/>
+                            <constraint firstItem="kjO-iS-M0h" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.33" id="zND-3b-kGH"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="bottomView" destination="WaH-qN-RWY" id="5nJ-eZ-vSe"/>
+                        <outlet property="middleView" destination="20W-I9-SWx" id="gfX-bu-q4W"/>
+                        <outlet property="topView" destination="kjO-iS-M0h" id="PoQ-zo-CNf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="131.8840579710145" y="138.61607142857142"/>
+        </scene>
+    </scenes>
+</document>
