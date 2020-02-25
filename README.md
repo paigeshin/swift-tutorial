@@ -1,6 +1,266 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+2020.02.25
+
+### 🔵 Notification
+
+1. 권한 주기 - AppDelegate
+
+        import UserNotifications
+
+        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                // Override point for customization after application launch.
+                let center = UNUserNotificationCenter.current()
+                center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+                    //Enable or disable features based on authorization
+                }
+                return true
+        }
+
+ 2.  `UNUserNotificationCenterDelegate` 
+
+    class ViewController: UIViewController, UNUserNotificationCenterDelegate {
+    
+                `override func viewDidLoad() {
+                    super.viewDidLoad()
+                             /* 아랫 부분 delegate */       
+                    `UNUserNotificationCenter.current().delegate = self
+                    
+                }`
+            }`
+
+ 3.  Notification Logic
+
+    @IBAction func notificationButton(_ sender: UIButton) {
+            
+            let content = UNMutableNotificationContent()
+            content.title = NSString.localizedUserNotificationString(forKey: "Hello!", arguments: nil)
+            content.body = NSString.localizedUserNotificationString(forKey: "Hello_message_body", arguments: nil)
+            //Deliver the notification in five seconds
+            content.sound = UNNotificationSound.default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            //Schedule the notification
+            let request = UNNotificationRequest(identifier: "FiveSecond", content: content, trigger: trigger)
+            let center = UNUserNotificationCenter.current()
+            center.add(request, withCompletionHandler: nil)
+            
+    }
+
+ 4.  delegate method, `userNotificationCenter` - `withCompletionHandler`
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+            completionHandler([.alert, .sound])
+    }
+
+ 5.  전체 코드
+
+    //
+    //  ViewController.swift
+    //  Notification
+    //
+    //  Created by shin seunghyun on 2020/02/25.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    import UserNotifications
+    
+    class ViewController: UIViewController, UNUserNotificationCenterDelegate {
+    
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            
+            UNUserNotificationCenter.current().delegate = self
+            
+        }
+    
+        @IBAction func notificationButton(_ sender: UIButton) {
+            
+            let content = UNMutableNotificationContent()
+            content.title = NSString.localizedUserNotificationString(forKey: "Hello!", arguments: nil)
+            content.body = NSString.localizedUserNotificationString(forKey: "Hello_message_body", arguments: nil)
+            //Deliver the notification in five seconds
+            content.sound = UNNotificationSound.default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            //Schedule the notification
+            let request = UNNotificationRequest(identifier: "FiveSecond", content: content, trigger: trigger)
+            let center = UNUserNotificationCenter.current()
+            center.add(request, withCompletionHandler: nil)
+            
+        }
+        
+        
+        func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+            completionHandler([.alert, .sound])
+        }
+        
+        
+        
+ }
+
+
+### 🔵 Privacy
+
+- iOS에서 보안상의 이유로 만들어 놓은 것
+
+1. 권한을 준다
+
+info.plist 로 가서 값을 추가한다 
+
+`Privacy - Camera Usage Description`  
+
+⇒ 카메라
+
+`Privacy - Photo Library Additions Usage Description`
+
+⇒ 앨범
+
+ 2.  implements two essential Delegate
+
+    UIImagePickerControllerDelegate, UINavigationControllerDelegate
+
+ 3.  코드
+
+    import UIKit
+    
+    class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            // Do any additional setup after loading the view.
+        }
+    
+        @IBAction func camera(_ sender: UIButton) {
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.sourceType = UIImagePickerController.SourceType.camera
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+        
+        @IBAction func album(_ sender: UIButton) {
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
+            imagePicker.allowsEditing = true
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+        
+    }
+
+4. 권한 확인
+
+- AVFoundation ⇒ 카메라
+- Photos ⇒ 앨범
+
+    //권한 받아오는 코드
+            let camearaStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
+            
+            if camearaStatus == .authorized {
+                //승인
+            } else if camearaStatus == .restricted {
+                //일부 권한
+            } else if camearaStatus == .notDetermined {
+                //아직 물어보지 않음
+            } else if camearaStatus == .denied {
+                //거절 당함
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "권한", message: "카메라 권한을 받아오지 못했습니다.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+            
+            let albumStatus = PHPhotoLibrary.authorizationStatus()
+            
+            if albumStatus == .authorized {
+                //승인
+            } else if albumStatus == .restricted {
+                //일부 권한
+            } else if albumStatus == .notDetermined {
+                //아직 물어보지 않음
+            } else if albumStatus == .denied {
+                //거절 당함
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "권한", message: "사진 권한을 받아오지 못했습니다.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+
+### 🔵 Camera - 사진 찍어서 저장
+
+1. imagePickerController 함수를 가져온다
+2. UIImageWriteToSavedPhotosAlbum(image, nil, nil ,nil)
+
+    //사진을 찍으면 여기 함수가 작동된다. 사진 정보를 받아올 수 있다. => 이미지가 찍혔을 때 작동되는 코드
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            
+            if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+                imageView.contentMode = .scaleAspectFit
+                imageView.image = pickedImage
+            }
+            
+            dismiss(animated: true, completion: nil)
+            
+        }
+        
+        @IBAction func savePhoto(_ sender: UIButton) {
+            
+    //        let imageData = UIImage.jpegData(self.imageView.image!)
+    //        let compressedImage = UIImage(data: imageData!)
+            
+            UIImageWriteToSavedPhotosAlbum(self.imageView.image!, nil, nil, nil)
+            
+        }
+
+### 🔵 언어 추가
+
+1. Scheme 변경
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8278ac4d-3908-4c52-a54c-4e6046c8ce49/Screen_Shot_2020-02-25_at_22.41.01.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8278ac4d-3908-4c52-a54c-4e6046c8ce49/Screen_Shot_2020-02-25_at_22.41.01.png)
+
+⇒ 먼저 `Edit Scheme`을 클릭한 후에 언어를 바꿔준다.
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2c6b6460-55d4-4733-9553-fc3d756f6fbd/Screen_Shot_2020-02-25_at_22.41.51.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2c6b6460-55d4-4733-9553-fc3d756f6fbd/Screen_Shot_2020-02-25_at_22.41.51.png)
+
+⇒ Run, Option 에 들어가서 언어를 바꿔준다.
+
+ 2.  앱 정보 화면에 가서 언어를 추가해준다.
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6557e1a1-2752-4312-9cb9-e759895e561e/Screen_Shot_2020-02-25_at_22.43.02.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6557e1a1-2752-4312-9cb9-e759895e561e/Screen_Shot_2020-02-25_at_22.43.02.png)
+
+3. 자동으로 생성된 파일  `Main.strings` 파일에서 값 바꿔주기
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8aedc534-463a-4416-8bbd-867c1be1a46b/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8aedc534-463a-4416-8bbd-867c1be1a46b/Untitled.png)
+
+    /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "7rJ-nm-yEs"; */
+    "7rJ-nm-yEs.normalTitle" = "버튼";
+
+ 4.  `Localizeable.strings` 파일 생성
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/24c0a981-1932-4063-9312-4ae258d98f82/Screen_Shot_2020-02-25_at_22.44.54.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/24c0a981-1932-4063-9312-4ae258d98f82/Screen_Shot_2020-02-25_at_22.44.54.png)
+
+⇒ key 값을 기준으로 각각 번역해준다. 
+
+    @IBAction func notificationButton(_ sender: UIButton) {
+            
+            let content = UNMutableNotificationContent()
+            content.title = NSString.localizedUserNotificationString(forKey: "Hello!", arguments: nil)
+            content.body = NSString.localizedUserNotificationString(forKey: "Hello_message_body", arguments: nil)
+            //Deliver the notification in five seconds
+            content.sound = UNNotificationSound.default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            //Schedule the notification
+            let request = UNNotificationRequest(identifier: "FiveSecond", content: content, trigger: trigger)
+            let center = UNUserNotificationCenter.current()
+            center.add(request, withCompletionHandler: nil)
+            
+    }
+
+NSString.localizedUserNotificationString ⇒ 이 부분이 위 설정을 적용해서 자동으로 번역해주는 부분이다
+
+
 2020.02.23
 
 - layout practice

@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Privacy
+//  SegueWayDelegate
 //
 //  Created by shin seunghyun on 2020/02/25.
 //  Copyright © 2020 shin seunghyun. All rights reserved.

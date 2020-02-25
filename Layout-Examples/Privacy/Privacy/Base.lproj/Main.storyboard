@@ -15,34 +15,56 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T9I-NW-UCc">
-                                <rect key="frame" x="180" y="740" width="54" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NGF-bR-mD2">
+                                <rect key="frame" x="180" y="744" width="54" height="30"/>
                                 <state key="normal" title="Camera"/>
                                 <connections>
-                                    <action selector="cameraPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="b2o-a4-Cfd"/>
+                                    <action selector="camera:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7gC-Kt-cNh"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EXv-0i-m4Y">
-                                <rect key="frame" x="185" y="796" width="44" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="voT-sM-ehi">
+                                <rect key="frame" x="185" y="808" width="44" height="30"/>
                                 <state key="normal" title="Album"/>
                                 <connections>
-                                    <action selector="albumPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="COb-Hd-lZE"/>
+                                    <action selector="album:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3o6-ce-Syf"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="65h-GB-Vod">
+                                <rect key="frame" x="195" y="684" width="34" height="30"/>
+                                <state key="normal" title="Save"/>
+                                <connections>
+                                    <action selector="savePhoto:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7hz-O8-W16"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="p9w-Hg-YrQ">
+                                <rect key="frame" x="0.0" y="274" width="414" height="254"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="254" id="d79-h9-snv"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="EXv-0i-m4Y" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Fha-4F-Zrd"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="EXv-0i-m4Y" secondAttribute="bottom" constant="36" id="VAg-vD-ieh"/>
-                            <constraint firstItem="EXv-0i-m4Y" firstAttribute="top" secondItem="T9I-NW-UCc" secondAttribute="bottom" constant="26" id="bdn-Ru-4GQ"/>
-                            <constraint firstItem="EXv-0i-m4Y" firstAttribute="centerX" secondItem="T9I-NW-UCc" secondAttribute="centerX" id="jT5-a0-ttk"/>
+                            <constraint firstItem="65h-GB-Vod" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" symbolic="YES" id="4Ut-SZ-4zB"/>
+                            <constraint firstItem="p9w-Hg-YrQ" firstAttribute="centerX" secondItem="NGF-bR-mD2" secondAttribute="centerX" id="6Ya-YZ-3D9"/>
+                            <constraint firstItem="NGF-bR-mD2" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="GEC-H0-bqn"/>
+                            <constraint firstItem="65h-GB-Vod" firstAttribute="trailing" secondItem="voT-sM-ehi" secondAttribute="trailing" id="KAB-m3-X3I"/>
+                            <constraint firstItem="voT-sM-ehi" firstAttribute="top" secondItem="NGF-bR-mD2" secondAttribute="bottom" constant="34" id="UQw-wP-Ijx"/>
+                            <constraint firstItem="p9w-Hg-YrQ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="230" id="YYE-pe-gBp"/>
+                            <constraint firstItem="p9w-Hg-YrQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="bRg-Vv-DPC"/>
+                            <constraint firstItem="65h-GB-Vod" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="640" id="dBW-HQ-bMq"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="voT-sM-ehi" secondAttribute="bottom" constant="24" id="oXw-O9-YX4"/>
+                            <constraint firstItem="voT-sM-ehi" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="r4x-wz-v1W"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="imageView" destination="p9w-Hg-YrQ" id="B0g-bg-2he"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="132" y="139"/>
+            <point key="canvasLocation" x="131.8840579710145" y="138.61607142857142"/>
         </scene>
     </scenes>
 </document>

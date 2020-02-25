@@ -19,13 +19,13 @@ class ViewController: UIViewController {
         navLeftButton.action = #selector(SWRevealViewController.revealToggle(_:))
         self.view.addGestureRecognizer(((self.revealViewController()?.panGestureRecognizer())!))
         
+        
         if let position = segueClicked {
             performSegue(withIdentifier: position, sender: self)
             print(position)
         }
-        
     }
-    
+
     @IBAction func navRightButtonPressed(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: "Mail", message: "도착한 메세지가 없습니다.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title:"확인", style: .default, handler: nil))
