@@ -1,6 +1,374 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
 
+2020.02.26
+
+        //
+        //  ViewController.swift
+        //  HowlMapkit
+        //
+        //  Created by shin seunghyun on 2020/02/26.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+
+        import UIKit
+        import MapKit
+
+        class ViewController: UIViewController {
+
+            
+            @IBOutlet weak var mapKitView: MKMapView!
+            //권한
+            let locationManager = CLLocationManager()
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                // Do any additional setup after loading the view.
+                
+                //화면 찍을 위치
+                let location = CLLocationCoordinate2D(latitude: 37.392448, longitude: 126.638831)
+                
+                //화면 찍는 부분과 description 추가
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = location
+                annotation.title = "Central Park"
+                annotation.subtitle = "공원"
+                
+                //확대하는 부분 코드
+                let span = MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.1)
+                //확대할 위치
+                let region = MKCoordinateRegion(center: location, span: span)
+                mapKitView.setRegion(region, animated: true)
+                
+                //실제로 mark를 찍어줌
+                mapKitView.addAnnotation(annotation)
+             
+                //자기 위치 찍기
+                //Info.plist에 Privacy - Location Always and When In Use Usage Description 를 줘야한다.
+                locationManager.requestWhenInUseAuthorization()
+                mapKitView.showsUserLocation = true
+                
+            }
+
+
+        }
+
+
+### 🔵 Notification (Without Server)
+
+1. 권한 주기 - AppDelegate
+
+        import UserNotifications
+
+        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                // Override point for customization after application launch.
+                let center = UNUserNotificationCenter.current()
+                center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+                    //Enable or disable features based on authorization
+                }
+                return true
+        }
+
+ 2.  `UNUserNotificationCenterDelegate` 
+
+    class ViewController: UIViewController, UNUserNotificationCenterDelegate {
+    
+        override func viewDidLoad() {
+            super.viewDidLoad()
+                     /* 아랫 부분 delegate */       
+            UNUserNotificationCenter.current().delegate = self
+            
+        }
+    }
+
+ 3.  Notification Logic
+
+    @IBAction func notificationButton(_ sender: UIButton) {
+            
+            let content = UNMutableNotificationContent()
+            content.title = NSString.localizedUserNotificationString(forKey: "Hello!", arguments: nil)
+            content.body = NSString.localizedUserNotificationString(forKey: "Hello_message_body", arguments: nil)
+            //Deliver the notification in five seconds
+            content.sound = UNNotificationSound.default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            //Schedule the notification
+            let request = UNNotificationRequest(identifier: "FiveSecond", content: content, trigger: trigger)
+            let center = UNUserNotificationCenter.current()
+            center.add(request, withCompletionHandler: nil)
+            
+    }
+
+ 4.  delegate method, `userNotificationCenter` - `withCompletionHandler`
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+            completionHandler([.alert, .sound])
+    }
+
+ 5.  전체 코드
+
+    //
+    //  ViewController.swift
+    //  Notification
+    //
+    //  Created by shin seunghyun on 2020/02/25.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    import UserNotifications
+    
+    class ViewController: UIViewController, UNUserNotificationCenterDelegate {
+    
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            
+            UNUserNotificationCenter.current().delegate = self
+            
+        }
+    
+        @IBAction func notificationButton(_ sender: UIButton) {
+            
+            let content = UNMutableNotificationContent()
+            content.title = NSString.localizedUserNotificationString(forKey: "Hello!", arguments: nil)
+            content.body = NSString.localizedUserNotificationString(forKey: "Hello_message_body", arguments: nil)
+            //Deliver the notification in five seconds
+            content.sound = UNNotificationSound.default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            //Schedule the notification
+            let request = UNNotificationRequest(identifier: "FiveSecond", content: content, trigger: trigger)
+            let center = UNUserNotificationCenter.current()
+            center.add(request, withCompletionHandler: nil)
+            
+        }
+        
+        
+        func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+            completionHandler([.alert, .sound])
+        }
+        
+        
+        
+    }
+
+### 🔵 Button With Notification  (Without Server)
+
+- survey
+
+        //
+        //  ViewController.swift
+        //  Notification
+        //
+        //  Created by shin seunghyun on 2020/02/25.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+        
+        import UIKit
+        import UserNotifications
+        
+        class ViewController: UIViewController, UNUserNotificationCenterDelegate {
+        
+        @IBOutlet weak var label: UILabel!
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            
+            let answer_1 = UNNotificationAction(identifier: "Good", title: "Lecture was great", options: [.foreground])
+            let answer_2 = UNNotificationAction(identifier: "Not Good", title: "Lecture quality was poor", options: [.foreground])
+            
+            let category = UNNotificationCategory(identifier: "SelectBox", actions: [answer_1, answer_2], intentIdentifiers: [], options: [])
+            UNUserNotificationCenter.current().setNotificationCategories([category])
+            
+            UNUserNotificationCenter.current().delegate = self
+            
+        }
+    
+        @IBAction func notificationButton(_ sender: UIButton) {
+            
+            let content = UNMutableNotificationContent()
+            content.title = NSString.localizedUserNotificationString(forKey: "Hello!", arguments: nil)
+            content.body = NSString.localizedUserNotificationString(forKey: "Hello_message_body", arguments: nil)
+            content.categoryIdentifier = "SelectBox"
+            //Deliver the notification in five seconds
+            content.sound = UNNotificationSound.default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            //Schedule the notification
+            let request = UNNotificationRequest(identifier: "FiveSecond", content: content, trigger: trigger)
+            let center = UNUserNotificationCenter.current()
+            center.add(request, withCompletionHandler: nil)
+            
+        }
+        
+        
+        func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+            completionHandler([.alert, .sound])
+        }
+        
+        func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+            
+            switch response.actionIdentifier {
+            case "Good":
+                label.text = "Lecture was Good"
+            case "Not Good":
+                label.text = "Lecture wasn't that bad"
+            default:
+                break
+            }
+            
+        }
+        
+        }
+
+---
+
+### 🔵 Firebase Push Message
+
+[https://firebase.google.com/docs/cloud-messaging/ios/client](https://firebase.google.com/docs/cloud-messaging/ios/client)
+
+**i.** Team 등록, with paid account
+
+**ii.** Apple에서 key를 발급받는다
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/47f115a9-c1be-45b7-b19d-12afe8d15af6/Screen_Shot_2020-02-26_at_21.31.08.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/47f115a9-c1be-45b7-b19d-12afe8d15af6/Screen_Shot_2020-02-26_at_21.31.08.png)
+
+iii. Apple에서 발급 받은 file을 upload하고 Key id를 등록해준다 
+
+- 기본적으로 apple account로 certificate를 등록해줘야 한다.
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/59e1e68c-82a8-4258-b9f8-3d98e4a5fcfa/Screen_Shot_2020-02-26_at_21.28.55.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/59e1e68c-82a8-4258-b9f8-3d98e4a5fcfa/Screen_Shot_2020-02-26_at_21.28.55.png)
+
+⇒ Cloud Messaging Tab에서 apple APN key를 등록해준다.
+
+IV. **background mode** & **remote notification 등록**
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fa7dc506-0730-4daa-953d-9868dddea76e/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fa7dc506-0730-4daa-953d-9868dddea76e/Untitled.png)
+
+V. 코드삽입
+
+- 아래 full code
+
+        //
+        //  AppDelegate.swift
+        //  FirebasePushNotification
+        //
+        //  Created by shin seunghyun on 2020/02/26.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+        
+        import UIKit
+        import Firebase
+        import UserNotifications
+        
+        @UIApplicationMain
+        class AppDelegate: UIResponder, UIApplicationDelegate {
+        
+        let gcmMessageIDKey = "gcm.message.id"
+    
+        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+            // Override point for customization after application launch.
+            if #available(iOS 10.0, *) {
+              // For iOS 10 display notification (sent via APNS)
+              UNUserNotificationCenter.current().delegate = self
+    
+              let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+              UNUserNotificationCenter.current().requestAuthorization(
+                options: authOptions,
+                completionHandler: {_, _ in })
+            } else {
+              let settings: UIUserNotificationSettings =
+              UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+              application.registerUserNotificationSettings(settings)
+            }
+            Messaging.messaging().delegate = self
+            application.registerForRemoteNotifications()
+            
+            FirebaseApp.configure()
+            return true
+        }
+    
+        // MARK: UISceneSession Lifecycle
+    
+        func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+            // Called when a new scene session is being created.
+            // Use this method to select a configuration to create the new scene with.
+            return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+        }
+    
+        func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+            // Called when the user discards a scene session.
+            // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+            // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+        }
+    
+    
+        }
+        
+        
+            
+        @available(iOS 10, *)
+        extension AppDelegate : UNUserNotificationCenterDelegate {
+    
+      // Receive displayed notifications for iOS 10 devices.
+      func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                  willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+    
+        // With swizzling disabled you must let Messaging know about the message, for Analytics
+        // Messaging.messaging().appDidReceiveMessage(userInfo)
+    
+        // Print message ID.
+        if let messageID = userInfo[gcmMessageIDKey] {
+          print("Message ID: \(messageID)")
+        }
+    
+        // Print full message.
+        print(userInfo)
+    
+        // Change this to your preferred presentation option
+        //핸드폰에 앱이 죽어있을 때는 push message가 잘가지만, app이 살아 있을 때는 push message가 잘 가지 않음. 그래서 completionHandler 아래에 app이 살아있을 때 어떻게 작동할지 코드를 넣어줌
+        completionHandler([.alert])
+      }
+    
+      func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                  didReceive response: UNNotificationResponse,
+                                  withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        // Print message ID.
+        if let messageID = userInfo[gcmMessageIDKey] {
+          print("Message ID: \(messageID)")
+        }
+    
+        // Print full message.
+        print(userInfo)
+    
+    
+        completionHandler()
+      }
+    }
+    
+        
+    
+        
+        extension AppDelegate: MessagingDelegate {
+        
+        //Token Refreshing
+        func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+          print("Firebase registration token: \(fcmToken)")
+    
+          let dataDict:[String: String] = ["token": fcmToken]
+          NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
+          // TODO: If necessary send token to application server.
+          // Note: This callback is fired at each app startup and whenever a new token is generated.
+        }
+        
+        //메시지 받은 것.
+        func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
+            print("Message Data: \(remoteMessage.appData)")
+        }
+        
+    
+
+
 2020.02.25
 
 ### 🔵 Notification
