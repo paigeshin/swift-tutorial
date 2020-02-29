@@ -1,5 +1,817 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
+2020.02.28
+
+### 🔵 구글 로그인
+
+[https://firebase.google.com/docs/auth/ios/google-signin](https://firebase.google.com/docs/auth/ios/google-signin) 
+
+⇒ 관련 문서
+
+- GoogleService-Info.plist 에서 REVERSED_CLIENTED_ID 를 복사해준다.
+
+`com.googleusercontent.apps.858094909588-21o045pjmm1l16o5vis3agm8ipab2p8o`
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5d9c316f-3893-4ee8-9f6e-e880c219f139/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5d9c316f-3893-4ee8-9f6e-e880c219f139/Untitled.png)
+
+- App 정보 창에서 `Info` Tab에 들어가서 URL Types을 추가해준다
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b286383b-36e9-4111-82ca-ca13cccccee6/Screen_Shot_2020-02-27_at_15.13.15.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b286383b-36e9-4111-82ca-ca13cccccee6/Screen_Shot_2020-02-27_at_15.13.15.png)
+
+- AppDelegate에 코드 추가
+
+    //
+    //  AppDelegate.swift
+    //  GoogleAuth
+    //
+    //  Created by shin seunghyun on 2020/02/27.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    import Firebase
+    import GoogleSignIn
+    import FirebaseAuth
+    
+    @UIApplicationMain
+    class AppDelegate: UIResponder, UIApplicationDelegate {
+        
+        
+        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+            // Override point for customization after application launch.
+            FirebaseApp.configure()
+            GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
+            GIDSignIn.sharedInstance().delegate = self
+            return true
+        }
+        
+        @available(iOS 9.0, *)
+        func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any])
+          -> Bool {
+          return GIDSignIn.sharedInstance().handle(url)
+        }
+        
+        func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+            return GIDSignIn.sharedInstance().handle(url)
+        }
+        
+        // MARK: UISceneSession Lifecycle
+    
+        func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+            // Called when a new scene session is being created.
+            // Use this method to select a configuration to create the new scene with.
+            return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+        }
+    
+        func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+            // Called when the user discards a scene session.
+            // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+            // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+        }
+    
+    
+    }
+    
+    extension AppDelegate: GIDSignInDelegate {
+        func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+            
+            if let error = error {
+              print(error)
+              return
+            }
+    
+            guard let authentication = user.authentication else { return }
+            let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
+                                                              accessToken: authentication.accessToken)
+            print(credential)
+        }
+        
+        func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
+            // Perform any operations when the user disconnects from app here.
+            // ...
+        }
+    }
+
+- View를 지정해주고 Custom Class를 넣어준다
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/77fa312c-7553-4c38-92e2-009b7cea5224/Screen_Shot_2020-02-27_at_15.28.14.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/77fa312c-7553-4c38-92e2-009b7cea5224/Screen_Shot_2020-02-27_at_15.28.14.png)
+
+- MainViewController
+
+    //
+    //  ViewController.swift
+    //  GoogleAuth
+    //
+    //  Created by shin seunghyun on 2020/02/27.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    import Firebase
+    import GoogleSignIn
+    import FirebaseAuth
+    
+    class ViewController: UIViewController {
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            // Do any additional setup after loading the view.
+            GIDSignIn.sharedInstance()?.presentingViewController = self
+            GIDSignIn.sharedInstance().signIn() //이렇게 해주면 이미 로그인 됬을 시에는 바로 넘어가게 설정 가능하다.
+        }
+        
+        @IBAction func googleSinginButtonPressed(_ sender: GIDSignInButton) {
+            GIDSignIn.sharedInstance().signIn()
+        }
+        
+    
+        
+    }
+
+⇒ 이렇게 하면 끝이 난다'
+
+
+🔵 Firebase Email Login 
+- TextField 디자인
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/63b2d032-fe44-4524-9822-4a4a00ec914a/Screen_Shot_2020-02-27_at_16.03.58.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/63b2d032-fe44-4524-9822-4a4a00ec914a/Screen_Shot_2020-02-27_at_16.03.58.png)
+
+⇒ Attributed를 누르면 여러가지 customizing이 가능해짐
+
+- button 디자인
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/29cf95cb-e23c-43b2-b053-d2d5fdfeeccb/Screen_Shot_2020-02-27_at_16.04.36.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/29cf95cb-e23c-43b2-b053-d2d5fdfeeccb/Screen_Shot_2020-02-27_at_16.04.36.png)
+
+⇒ Key, Value 값의 형태로 값을 지정해줄 수 있다.  현재는 `cornerRadius` 값을 넣어줬다. 
+
+    @IBAction func loginButtonPressed(_ sender: UIButton) {
+            
+            Auth.auth().createUser(withEmail: email.text!, password: password.text!) { (user, error) in
+                
+                if(error != nil){return}
+                
+                let alert = UIAlertController(title: "알림", message: "회원가입완료", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                
+            }
+            
+        }
+
+
+🔵 Firebase Login Listener
+
+- 아래 코드를 삽입하면 유저가 이미 있으면 그냥 앞 화면으로 넘어가게 한다
+
+    Auth.auth().addStateDidChangeListener { (user, error) in
+          if user != nil {
+              self.performSegue(withIdentifier: "Home", sender: self)
+          }
+    }
+
+- 전체 코드
+
+    //
+    //  ViewController.swift
+    //  GoogleAuth
+    //
+    //  Created by shin seunghyun on 2020/02/27.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    import GoogleSignIn
+    import FirebaseAuth
+    
+    class ViewController: UIViewController {
+        
+        @IBOutlet weak var email: UITextField!
+        @IBOutlet weak var password: UITextField!
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            // Do any additional setup after loading the view.
+            GIDSignIn.sharedInstance()?.presentingViewController = self
+            GIDSignIn.sharedInstance().signIn() //이미 로그인 됬을 시에는 바로 넘어가게 설정 가능하다.
+            
+            Auth.auth().addStateDidChangeListener { (user, error) in
+                if user != nil {
+                    self.performSegue(withIdentifier: "Home", sender: self)
+                }
+            }
+            
+        }
+        
+        @IBAction func googleSinginButtonPressed(_ sender: GIDSignInButton) {
+            GIDSignIn.sharedInstance().signIn()
+            
+            
+        }
+        
+        @IBAction func loginButtonPressed(_ sender: UIButton) {
+            Auth.auth().createUser(withEmail: email.text!, password: password.text!) { (user, error) in
+                if(error != nil){
+                    Auth.auth().signIn(withEmail: self.email.text!, password: self.password.text!) { (user, error) in
+                        self.performSegue(withIdentifier: "Home", sender: self)
+                    }
+                    return
+                } else {
+                    
+                    let alert = UIAlertController(title: "알림", message: "회원가입완료", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                    
+                }
+    
+            }
+        }
+        
+        
+    }
+
+🔵 Firebase File Upload
+
+- 먼저 앨범을 열어준다
+
+    @IBAction func profileUpload(_ sender: UIButton) {
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
+            imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+
+- 앨범을 열어준 후에 사진을 저장
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            
+            
+            let pickedImage =  info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+            
+            if let data = pickedImage.pngData() {
+                let fileImageName = "\(String(describing: Auth.auth().currentUser?.uid))" + "\(Int(Date.timeIntervalBetween1970AndReferenceDate * 1000)).jpg"
+                
+                //FireStore 선언
+                let ref = Storage
+                    .storage()
+                    .reference()
+                    .child("ios_images")
+                    .child(fileImageName)
+                
+                ref.putData(data, metadata: nil) { (metadata, error) in
+                    if(error != nil){
+                        
+                    } else {
+                        guard let metadata = metadata else { return }
+                    }
+                }
+            }
+            dismiss(animated: true, completion: nil)
+            
+        }
+
+1. imagePicker delegate method 중에 `didFinishPickingMediaWithInfo` 을 고른다 
+2. `pngData()` 를 이용해서 `Data` 타입으로 바꾸어줌 
+3. Reference Storage를 instatiate
+4. `ref.putData` 호출 
+
+- 전체 코드
+
+    //
+    //  UserController.swift
+    //  GoogleAuth
+    //
+    //  Created by shin seunghyun on 2020/02/27.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    import FirebaseAuth
+    import FirebaseStorage
+    
+    class UserController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        
+        
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            // Do any additional setup after loading the view.
+        }
+        
+        
+        @IBAction func logout(_ sender: UIButton) {
+            
+            do {
+                try Auth.auth().signOut()
+            } catch {
+                print(error.localizedDescription)
+            }
+            dismiss(animated: true, completion: nil)
+            
+        }
+        
+        @IBAction func profileUpload(_ sender: UIButton) {
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
+            imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+        
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            
+            
+            let pickedImage =  info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+            
+            if let data = pickedImage.pngData() {
+                let fileImageName = "\(String(describing: Auth.auth().currentUser?.uid))" + "\(Int(Date.timeIntervalBetween1970AndReferenceDate * 1000)).jpg"
+                
+                //FireStore 선언
+                let ref = Storage
+                    .storage()
+                    .reference()
+                    .child("ios_images")
+                    .child(fileImageName)
+                
+                ref.putData(data, metadata: nil) { (metadata, error) in
+                    if(error != nil){
+                        
+                    } else {
+                        guard let metadata = metadata else { return }
+                    }
+                }
+            }
+            dismiss(animated: true, completion: nil)
+            
+        }
+        
+    }
+
+🔵 Firebase Database
+
+- 실제 데이터 베이스 코드 부분
+
+    //데이터를 실제로 데이터 베이스에 보내주는 부분
+    Database.database().reference().child("users").setValue([
+        "userId": Auth.auth().currentUser?.email,
+        "uid": Auth.auth().currentUser?.uid,
+        "subject": self.subject.text!,
+        "explanation": self.explanation.text!,
+        "imageUrl": downloadURL
+    ])
+
+⇒ 먼저 FirebaseDatabase 를 import 
+
+⇒ `setValue( Dictionary )` , parameter로 class가 들어가도 된다  
+
+- 전체 코드
+
+    func upload(pickedImage: UIImage){
+            
+            if let data = pickedImage.pngData() {
+                
+                let fileImageName = "\(String(describing: Auth.auth().currentUser?.uid))" + "\(Int(Date.timeIntervalBetween1970AndReferenceDate * 1000)).jpg"
+                
+                //FireStore 선언
+                let ref = Storage
+                    .storage()
+                    .reference()
+                    .child("ios_images")
+                    .child(fileImageName)
+                
+                ref.putData(data, metadata: nil) { (metadata, error) in
+                    if(error != nil){
+                        
+                    } else {
+                        ref.downloadURL { (url, error) in
+                            if let downloadURL = url?.absoluteString {
+                                
+                                //데이터를 실제로 데이터 베이스에 보내주는 부분
+                                Database.database().reference().child("users").setValue([
+                                    "userId": Auth.auth().currentUser?.email,
+                                    "uid": Auth.auth().currentUser?.uid,
+                                    "subject": self.subject.text!,
+                                    "explanation": self.explanation.text!,
+                                    "imageUrl": downloadURL
+                                ])
+                            }
+                            
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                }
+            }
+            
+        }
+
+🔵 Firebase Database Retrieve data
+
+- UserDTO
+
+❗️NSObject를 상속해야함.
+
+    //
+    //  UserDTO.swift
+    //  GoogleAuth
+    //
+    //  Created by shin seunghyun on 2020/02/29.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    
+    class UserDTO: NSObject {
+        
+        var uid: String?
+        var userId: String?
+        var subject: String?
+        var explanation: String?
+        var imageUrl: String?
+        
+    }
+
+- Data Retrieve
+
+    Database.database().reference().child("users").observe(DataEventType.value) { (snapshot) in
+                
+                print(snapshot)
+                self.array.removeAll()
+                
+                for child in snapshot.children {
+                    let fChild = child as! DataSnapshot
+                    let dictionary = fChild.value as! [String: Any]
+                    //Mapping
+                    let userDTO = UserDTO()
+                    userDTO.explanation = dictionary["explanation"] as? String
+                    userDTO.subject = dictionary["subject"] as? String
+                    userDTO.imageUrl = dictionary["imageUrl"] as? String 
+                    
+                    
+                    self.array.append(userDTO)
+                }
+                
+                self.collectionView.reloadData()
+                
+            }
+
+- Full Code
+
+    //
+    //  HomeController.swift
+    //  GoogleAuth
+    //
+    //  Created by shin seunghyun on 2020/02/27.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    import FirebaseAuth
+    import FirebaseDatabase
+    
+    class HomeController: UIViewController {
+        
+        var array: [UserDTO] = []
+        var uidKey: [String] = []
+        
+        @IBOutlet weak var collectionView: UICollectionView!
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+    
+    
+            Database.database().reference().child("users").observe(DataEventType.value) { (snapshot) in
+                
+                print(snapshot)
+                self.array.removeAll()
+                
+                for child in snapshot.children {
+                    let fChild = child as! DataSnapshot
+                    let dictionary = fChild.value as! [String: Any]
+                    //Mapping
+                    let userDTO = UserDTO()
+                    userDTO.explanation = dictionary["explanation"] as? String
+                    userDTO.subject = dictionary["subject"] as? String
+                    userDTO.imageUrl = dictionary["imageUrl"] as? String 
+                    
+                    
+                    self.array.append(userDTO)
+                }
+                
+                self.collectionView.reloadData()
+                
+            }
+            // Do any additional setup after loading the view.
+        }
+        
+    
+        /*
+        // MARK: - Navigation
+    
+        // In a storyboard-based application, you will often want to do a little preparation before navigation
+        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+            // Get the new view controller using segue.destination.
+            // Pass the selected object to the new view controller.
+        }
+        */
+    
+    }
+    
+    extension HomeController : UICollectionViewDataSource, UICollectionViewDelegate {
+    
+        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+            return array.count;
+        }
+        
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RowCell", for: indexPath) as! CustomCell         
+            cell.subject.text = array[indexPath.row].subject
+            cell.explanation.text = array[indexPath.row].explanation
+    
+            let data = try? Data(contentsOf: URL(string: array[indexPath.row].imageUrl!)!)
+            cell.imageView.image = UIImage(data: data!)
+            
+    
+            
+            return cell
+        }
+        
+        
+    }
+    
+    class CustomCell : UICollectionViewCell {
+        
+        @IBOutlet weak var imageView: UIImageView!
+        @IBOutlet weak var subject: UILabel!
+        @IBOutlet weak var explanation: UILabel!
+        
+    }
+
+❗️iOS에서는 glide 같은 library를 쓰지 않아도 이미지를 가져올 수 있다. 
+
+Data(contentsOf: URL(string: array[indexPath.row].imageUrl!)!)
+
+
+🔵 Firebase Transaction, Like Button
+# Save data as transactions
+
+When working with data that could be corrupted by concurrent modifications, such as incremental counters, you can use a [transaction operation](https://firebase.google.com/docs/reference/ios/firebasedatabase/interface_f_i_r_database_reference#a796bff455159479a44b225eeaa2ba9d6). You give this operation two arguments: an update function and an optional completion callback. The update function takes the current state of the data as an argument and returns the new desired state you would like to write.
+
+For instance, in the example social blogging app, you could allow users to star and unstar posts and keep track of how many stars a post has received as follows:
+
+    ref.runTransactionBlock({ (currentData: MutableData) -> TransactionResult in
+      if var post = currentData.value as? [String : AnyObject], let uid = Auth.auth().currentUser?.uid {
+        var stars: Dictionary<String, Bool>
+        stars = post["stars"] as? [String : Bool] ?? [:]
+        var starCount = post["starCount"] as? Int ?? 0
+        if let _ = stars[uid] {
+          // Unstar the post and remove self from stars
+          starCount -= 1
+          stars.removeValue(forKey: uid)
+        } else {
+          // Star the post and add self to stars
+          starCount += 1
+          stars[uid] = true
+        }
+        post["starCount"] = starCount as AnyObject?
+        post["stars"] = stars as AnyObject?
+    
+        // Set value and report transaction success
+        currentData.value = post
+    
+        return TransactionResult.success(withValue: currentData)
+      }
+      return TransactionResult.success(withValue: currentData)
+    }) { (error, committed, snapshot) in
+      if let error = error {
+        print(error.localizedDescription)
+      }
+    }
+
+Using a transaction prevents star counts from being incorrect if multiple users star the same post at the same time or the client had stale data. The value contained in the **`FIRMutableData`** class is initially the client's last known value for the path, or **`nil`** if there is none. The server compares the initial value against it's current value and accepts the transaction if the values match, or rejects it. If the transaction is rejected, the server returns the current value to the client, which runs the transaction again with the updated value. This repeats until the transaction is accepted or too many attempts have been made.
+
+**Note:** Because **`runTransactionBlock:andCompletionBlock:`** is called multiple times, it must be able to handle **`nil`** data. Even if there is existing data in your remote database, it may not be locally cached when the transaction function is run, resulting in **`nil`** for the initial value.
+
+    //
+    //  HomeController.swift
+    //  GoogleAuth
+    //
+    //  Created by shin seunghyun on 2020/02/27.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    import FirebaseAuth
+    import FirebaseDatabase
+    
+    class HomeController: UIViewController {
+        
+        var uidKey: [String] = []
+        var array: [UserDTO] = []
+        
+        
+        @IBOutlet weak var collectionView: UICollectionView!
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            
+            
+            Database.database().reference().child("users").observeSingleEvent(of: DataEventType.value) { (snapshot) in
+                
+                print(snapshot)
+                self.array.removeAll()
+                self.uidKey.removeAll()
+                
+                for child in snapshot.children {
+                    let fChild = child as! DataSnapshot
+                    let dictionary = fChild.value as! [String: Any]
+                    //Mapping
+                    let userDTO = UserDTO()
+                    
+                    userDTO.explanation = dictionary["explanation"] as? String
+                    userDTO.subject = dictionary["subject"] as? String
+                    userDTO.imageUrl = dictionary["imageUrl"] as? String
+                    userDTO.stars = dictionary["stars"] as? [String: Bool]
+                    
+                    let uidKey = fChild.key
+                    
+                    self.array.append(userDTO)
+                    //자동으로 생성된 key값을 어레이에 담아준다.
+                    self.uidKey.append(uidKey)
+                }
+                
+                self.collectionView.reloadData()
+                
+            }
+            // Do any additional setup after loading the view.
+        }
+        
+        
+    }
+    
+    extension HomeController : UICollectionViewDataSource, UICollectionViewDelegate {
+        
+        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+            return array.count;
+        }
+        
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RowCell", for: indexPath) as! CustomCell         
+            cell.subject.text = array[indexPath.row].subject
+            cell.explanation.text = array[indexPath.row].explanation
+            
+            let data = try? Data(contentsOf: URL(string: array[indexPath.row].imageUrl!)!)
+            cell.imageView.image = UIImage(data: data!)
+            
+    				//tag를 달아 줄 수 있음 
+            cell.startButton.tag = indexPath.row
+            cell.startButton.addTarget(self, action: #selector(like(_:)), for: .touchUpInside)
+            
+            //Firebase Database의 post 값이 특정 유저의 uid가 있는지 없는지 체크해준다.
+            if let _ = self.array[indexPath.row].stars?[Auth.auth().currentUser!.uid]{
+                //좋아요가 클릭도 있을 경우
+                cell.startButton.setImage(#imageLiteral(resourceName: "baseline_favorite_black_18dp"), for: .normal)
+            } else {
+                cell.startButton.setImage(#imageLiteral(resourceName: "baseline_favorite_border_black_18dp"), for: .normal)
+            }
+            
+            return cell
+        }
+        
+        @objc func like(_ sender : UIButton){
+            
+            if(sender.currentImage == #imageLiteral(resourceName: "baseline_favorite_black_18dp")){
+                sender.setImage(#imageLiteral(resourceName: "baseline_favorite_border_black_18dp"), for: .normal)
+            } else {
+                sender.setImage(#imageLiteral(resourceName: "baseline_favorite_black_18dp"), for: .normal)
+            }
+            
+            Database.database().reference().child("users")
+                .child(self.uidKey[sender.tag])
+                .runTransactionBlock({ (currentData: MutableData) -> TransactionResult in
+                    if var post = currentData.value as? [String : AnyObject], let uid = Auth.auth().currentUser?.uid {
+                        var stars: Dictionary<String, Bool>
+                        stars = post["stars"] as? [String : Bool] ?? [:]
+                        var starCount = post["starCount"] as? Int ?? 0
+                        if let _ = stars[uid] {
+                            // Unstar the post and remove self from stars
+                            starCount -= 1
+                            stars.removeValue(forKey: uid)
+                        } else {
+                            // Star the post and add self to stars
+                            starCount += 1
+                            stars[uid] = true
+                        }
+                        post["starCount"] = starCount as AnyObject?
+                        post["stars"] = stars as AnyObject?
+                        
+                        // Set value and report transaction success
+                        currentData.value = post
+                        
+                        return TransactionResult.success(withValue: currentData)
+                    }
+                    return TransactionResult.success(withValue: currentData)
+                }) { (error, committed, snapshot) in
+                    if let error = error {
+                        print(error.localizedDescription)
+                    }
+            }
+      
+        }
+        
+        
+    }
+    
+    class CustomCell : UICollectionViewCell {
+        
+        @IBOutlet weak var imageView: UIImageView!
+        @IBOutlet weak var subject: UILabel!
+        @IBOutlet weak var explanation: UILabel!
+        @IBOutlet weak var startButton: UIButton!
+        
+    }
+
+    cell.startButton.tag = indexPath.row
+    cell.startButton.addTarget(self, action: #selector(like(_:)), for: .touchUpInside)
+
+⇒ addTarget → 보통 함수를 파라미터로 받아서 사용.
+
+    //
+    //  UserDTO.swift
+    //  GoogleAuth
+    //
+    //  Created by shin seunghyun on 2020/02/29.
+    //  Copyright © 2020 shin seunghyun. All rights reserved.
+    //
+    
+    import UIKit
+    
+    class UserDTO: NSObject {
+        
+        var uid: String?
+        var userId: String?
+        var subject: String?
+        var explanation: String?
+        var imageUrl: String?
+        var startCount: NSNumber?
+        var stars: [String: Bool]?
+        
+    }
+
+⇒ startCount, stars
+
+🔵 Firebase Data Delete, Firebase Storage, Database
+
+- Observer Pattern
+
+⇒ 서버가 데이터를 바꿀 때마다 바로바로 바꿔줌
+
+- firebase, storage, database 핸들링
+
+    @objc func deletePost(_ sender: UIButton){
+      
+    	Storage.storage().reference().child("ios_images").child(self.array[sender.tag].imageName!).delete { (error) in
+    	    if(error != nil){
+    	        print("Error occured while deleting")
+    	    } else {
+    	        Database.database().reference().child("users").child(self.uidKey[sender.tag]).removeValue()
+    	    }
+    	}
+    
+    }
+
+- image 서버에서 로딩할 때 비동기로 바꿔주기
+
+    //Thread를 돌려서 loading 속도를 더 빠르게 한다.
+    URLSession.shared.dataTask(with: URL(string: array[indexPath.row].imageUrl!)!) { (data, response, error) in
+        if error != nil {
+            return
+        }
+        DispatchQueue.main.async {
+            cell.imageView.image = UIImage(data: data!)
+        }
+    }.resume()
+
+🔵 Crash Report
+
+[https://firebase.google.com/docs/crashlytics](https://firebase.google.com/docs/crashlytics)
+
+1. Dependency 추가
+
+    pod 'Crashlytics'
+    pod 'Crashlytics', '~> 3.10.1'
+
+ 2.   App Setting에 Build Settings의 Debug Information Format을 `DWARF with dSYM File` 로 바꾼다. 
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3c2e91bd-c6ce-4221-b455-ed3a0cc244ee/Screen_Shot_2020-02-29_at_23.14.58.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3c2e91bd-c6ce-4221-b455-ed3a0cc244ee/Screen_Shot_2020-02-29_at_23.14.58.png)
+
+ 3.  App Setting에 Build Phases로 가서 script를 추가하고 아래 코드를 추가한다
+
+    "${PODS_ROOT}/Fabric/run"
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6475f9d6-0b3b-4a80-9174-b8cf1d1c53b3/Screen_Shot_2020-02-29_at_23.16.47.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6475f9d6-0b3b-4a80-9174-b8cf1d1c53b3/Screen_Shot_2020-02-29_at_23.16.47.png)
+
+❗️이것을 적용하면 코드가 자동으로 encrypt 된다.
+
 
 2020.02.26
 
