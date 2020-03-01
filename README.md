@@ -1,5 +1,166 @@
 # swift-tutorial
 회사서 급하게 iOS가 필요하다고 해서 시작한 스터디
+
+2020.03.01
+
+🔵 Remote Config
+
+- app을 원격으로 조정할 때, 예를들어 서버를 조정한다던가..
+
+    관련 doucment
+
+    [https://firebase.google.com/docs/remote-config/use-config-ios](https://firebase.google.com/docs/remote-config/use-config-ios)
+
+    1. pod 설치 
+
+        pod 'Firebase/Core'
+        pod 'Firebase/RemoteConfig'
+
+     2.  remote server에 parameter 등록
+
+    ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7ebcd05b-6325-4f4a-af98-88397609c168/Screen_Shot_2020-03-01_at_14.12.27.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7ebcd05b-6325-4f4a-af98-88397609c168/Screen_Shot_2020-03-01_at_14.12.27.png)
+
+    3. create plist file to store data
+
+    ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7d09a112-9c9c-4132-b7bb-4accfccf9a26/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7d09a112-9c9c-4132-b7bb-4accfccf9a26/Untitled.png)
+
+     
+
+    4.  installation
+
+        var remoteConfig: RemoteConfig!
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                // Do any additional setup after loading the view.
+                
+                remoteConfig = RemoteConfig.remoteConfig()
+                remoteConfig.setDefaults(fromPlist: "FirebaseRemoteConfig")
+                
+                self.fetchConfig()
+                DispatchQueue.main.async {
+                 
+                    self.displayMessage()
+                }
+                
+            }
+
+     5.  set the message
+
+        func displayMessage(){
+                let message = remoteConfig["welcome_message"].stringValue
+                let caps = remoteConfig["welcome_message_caps"].boolValue
+                let color = remoteConfig["backgroundColor"].numberValue
+                
+                if caps {
+                    let alert = UIAlertController(title: "공지사항", message: message, preferredStyle: .alert)
+                    let action = UIAlertAction(title: "확인", style: .default) { (action) in
+                        exit(0)
+                    }
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
+                }
+                if color == 1 {
+                    self.view.backgroundColor = UIColor.black
+                }
+            }
+
+     6.  fetch config
+
+        func fetchConfig() {
+                
+                let remoteConfigSettings = RemoteConfigSettings()
+                remoteConfig.configSettings = remoteConfigSettings
+                
+                remoteConfig.fetch(withExpirationDuration: 3600) { (state, error) in
+                    
+                    if state == .success {
+                        self.remoteConfig.activate { (error) in
+                            if error != nil {
+                                self.displayMessage()
+                            }
+                        }
+                    }
+                    
+                }
+                
+            }
+
+    7.  full code
+
+        //
+        //  ViewController.swift
+        //  remote_config
+        //
+        //  Created by shin seunghyun on 2020/03/01.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
+        
+        import UIKit
+        import Firebase
+        
+        
+        class ViewController: UIViewController {
+            
+            var remoteConfig: RemoteConfig!
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                // Do any additional setup after loading the view.
+                
+                remoteConfig = RemoteConfig.remoteConfig()
+                remoteConfig.setDefaults(fromPlist: "FirebaseRemoteConfig")
+                
+                self.fetchConfig()
+                DispatchQueue.main.async {
+                 
+                    self.displayMessage()
+                }
+                
+            }
+            
+            func fetchConfig() {
+                
+                let remoteConfigSettings = RemoteConfigSettings()
+                remoteConfig.configSettings = remoteConfigSettings
+                
+                remoteConfig.fetch(withExpirationDuration: 3600) { (state, error) in
+                    
+                    if state == .success {
+                        self.remoteConfig.activate { (error) in
+                            if error != nil {
+                                self.displayMessage()
+                            }
+                        }
+                    }
+                    
+                }
+                
+            }
+            
+            func displayMessage(){
+                let message = remoteConfig["welcome_message"].stringValue
+                let caps = remoteConfig["welcome_message_caps"].boolValue
+                let color = remoteConfig["backgroundColor"].numberValue
+                
+                if caps {
+                    let alert = UIAlertController(title: "공지사항", message: message, preferredStyle: .alert)
+                    let action = UIAlertAction(title: "확인", style: .default) { (action) in
+                        exit(0)
+                    }
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
+                }
+                if color == 1 {
+                    self.view.backgroundColor = UIColor.black
+                }
+            }
+            
+            
+        }
+
+
+
 2020.02.28
 
 ### 🔵 구글 로그인
@@ -20,77 +181,77 @@
 
 - AppDelegate에 코드 추가
 
-    //
-    //  AppDelegate.swift
-    //  GoogleAuth
-    //
-    //  Created by shin seunghyun on 2020/02/27.
-    //  Copyright © 2020 shin seunghyun. All rights reserved.
-    //
-    
-    import UIKit
-    import Firebase
-    import GoogleSignIn
-    import FirebaseAuth
-    
-    @UIApplicationMain
-    class AppDelegate: UIResponder, UIApplicationDelegate {
+        //
+        //  AppDelegate.swift
+        //  GoogleAuth
+        //
+        //  Created by shin seunghyun on 2020/02/27.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
         
+        import UIKit
+        import Firebase
+        import GoogleSignIn
+        import FirebaseAuth
         
-        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-            // Override point for customization after application launch.
-            FirebaseApp.configure()
-            GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
-            GIDSignIn.sharedInstance().delegate = self
-            return true
-        }
-        
-        @available(iOS 9.0, *)
-        func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any])
-          -> Bool {
-          return GIDSignIn.sharedInstance().handle(url)
-        }
-        
-        func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-            return GIDSignIn.sharedInstance().handle(url)
-        }
-        
-        // MARK: UISceneSession Lifecycle
-    
-        func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-            // Called when a new scene session is being created.
-            // Use this method to select a configuration to create the new scene with.
-            return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-        }
-    
-        func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-            // Called when the user discards a scene session.
-            // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-            // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-        }
-    
-    
-    }
-    
-    extension AppDelegate: GIDSignInDelegate {
-        func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        @UIApplicationMain
+        class AppDelegate: UIResponder, UIApplicationDelegate {
             
-            if let error = error {
-              print(error)
-              return
+            
+            func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                // Override point for customization after application launch.
+                FirebaseApp.configure()
+                GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
+                GIDSignIn.sharedInstance().delegate = self
+                return true
             }
-    
-            guard let authentication = user.authentication else { return }
-            let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
-                                                              accessToken: authentication.accessToken)
-            print(credential)
+            
+            @available(iOS 9.0, *)
+            func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any])
+              -> Bool {
+              return GIDSignIn.sharedInstance().handle(url)
+            }
+            
+            func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+                return GIDSignIn.sharedInstance().handle(url)
+            }
+            
+            // MARK: UISceneSession Lifecycle
+        
+            func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+                // Called when a new scene session is being created.
+                // Use this method to select a configuration to create the new scene with.
+                return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+            }
+        
+            func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+                // Called when the user discards a scene session.
+                // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+                // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+            }
+        
+        
         }
         
-        func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
-            // Perform any operations when the user disconnects from app here.
-            // ...
+        extension AppDelegate: GIDSignInDelegate {
+            func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+                
+                if let error = error {
+                  print(error)
+                  return
+                }
+            
+                guard let authentication = user.authentication else { return }
+                let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
+                                                                  accessToken: authentication.accessToken)
+                print(credential)
+            }
+            
+            func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
+                // Perform any operations when the user disconnects from app here.
+                // ...
+            }
         }
-    }
 
 - View를 지정해주고 Custom Class를 넣어준다
 
@@ -110,23 +271,23 @@
     import Firebase
     import GoogleSignIn
     import FirebaseAuth
-    
-    class ViewController: UIViewController {
         
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            // Do any additional setup after loading the view.
-            GIDSignIn.sharedInstance()?.presentingViewController = self
-            GIDSignIn.sharedInstance().signIn() //이렇게 해주면 이미 로그인 됬을 시에는 바로 넘어가게 설정 가능하다.
+        class ViewController: UIViewController {
+            
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                // Do any additional setup after loading the view.
+                GIDSignIn.sharedInstance()?.presentingViewController = self
+                GIDSignIn.sharedInstance().signIn() //이렇게 해주면 이미 로그인 됬을 시에는 바로 넘어가게 설정 가능하다.
+            }
+            
+            @IBAction func googleSinginButtonPressed(_ sender: GIDSignInButton) {
+                GIDSignIn.sharedInstance().signIn()
+            }
+            
+        
+            
         }
-        
-        @IBAction func googleSinginButtonPressed(_ sender: GIDSignInButton) {
-            GIDSignIn.sharedInstance().signIn()
-        }
-        
-    
-        
-    }
 
 ⇒ 이렇게 하면 끝이 난다'
 
@@ -163,71 +324,71 @@
 
 - 아래 코드를 삽입하면 유저가 이미 있으면 그냥 앞 화면으로 넘어가게 한다
 
-    Auth.auth().addStateDidChangeListener { (user, error) in
-          if user != nil {
-              self.performSegue(withIdentifier: "Home", sender: self)
-          }
-    }
+        Auth.auth().addStateDidChangeListener { (user, error) in
+              if user != nil {
+                  self.performSegue(withIdentifier: "Home", sender: self)
+              }
+        }
 
 - 전체 코드
 
-    //
-    //  ViewController.swift
-    //  GoogleAuth
-    //
-    //  Created by shin seunghyun on 2020/02/27.
-    //  Copyright © 2020 shin seunghyun. All rights reserved.
-    //
-    
-    import UIKit
-    import GoogleSignIn
-    import FirebaseAuth
-    
-    class ViewController: UIViewController {
+        //
+        //  ViewController.swift
+        //  GoogleAuth
+        //
+        //  Created by shin seunghyun on 2020/02/27.
+        //  Copyright © 2020 shin seunghyun. All rights reserved.
+        //
         
-        @IBOutlet weak var email: UITextField!
-        @IBOutlet weak var password: UITextField!
+        import UIKit
+        import GoogleSignIn
+        import FirebaseAuth
         
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            // Do any additional setup after loading the view.
-            GIDSignIn.sharedInstance()?.presentingViewController = self
-            GIDSignIn.sharedInstance().signIn() //이미 로그인 됬을 시에는 바로 넘어가게 설정 가능하다.
+        class ViewController: UIViewController {
             
-            Auth.auth().addStateDidChangeListener { (user, error) in
-                if user != nil {
-                    self.performSegue(withIdentifier: "Home", sender: self)
-                }
-            }
+            @IBOutlet weak var email: UITextField!
+            @IBOutlet weak var password: UITextField!
             
-        }
-        
-        @IBAction func googleSinginButtonPressed(_ sender: GIDSignInButton) {
-            GIDSignIn.sharedInstance().signIn()
-            
-            
-        }
-        
-        @IBAction func loginButtonPressed(_ sender: UIButton) {
-            Auth.auth().createUser(withEmail: email.text!, password: password.text!) { (user, error) in
-                if(error != nil){
-                    Auth.auth().signIn(withEmail: self.email.text!, password: self.password.text!) { (user, error) in
+            override func viewDidLoad() {
+                super.viewDidLoad()
+                // Do any additional setup after loading the view.
+                GIDSignIn.sharedInstance()?.presentingViewController = self
+                GIDSignIn.sharedInstance().signIn() //이미 로그인 됬을 시에는 바로 넘어가게 설정 가능하다.
+                
+                Auth.auth().addStateDidChangeListener { (user, error) in
+                    if user != nil {
                         self.performSegue(withIdentifier: "Home", sender: self)
                     }
-                    return
-                } else {
-                    
-                    let alert = UIAlertController(title: "알림", message: "회원가입완료", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                    
                 }
-    
+                
             }
+            
+            @IBAction func googleSinginButtonPressed(_ sender: GIDSignInButton) {
+                GIDSignIn.sharedInstance().signIn()
+                
+                
+            }
+            
+            @IBAction func loginButtonPressed(_ sender: UIButton) {
+                Auth.auth().createUser(withEmail: email.text!, password: password.text!) { (user, error) in
+                    if(error != nil){
+                        Auth.auth().signIn(withEmail: self.email.text!, password: self.password.text!) { (user, error) in
+                            self.performSegue(withIdentifier: "Home", sender: self)
+                        }
+                        return
+                    } else {
+                        
+                        let alert = UIAlertController(title: "알림", message: "회원가입완료", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        
+                    }
+        
+                }
+            }
+            
+            
         }
-        
-        
-    }
 
 🔵 Firebase File Upload
 
